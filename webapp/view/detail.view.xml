@@ -1,0 +1,95 @@
+<mvc:View controllerName="supplierportal.controller.detail"
+    xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:l="sap.ui.layout" xmlns:core="sap.ui.core">
+    <Page id="detailPage" title="{i18n>detailsTitle} - {= ${REQID} || ${ID} }"
+        showFooter="{= ${ui>/allowed} &amp;&amp; (${Status} === '3' || ${Status} === '7') }" showNavButton="true" navButtonPress=".onNavBack">
+        <content>
+            <VBox id="detailContent" class="supplierContent">
+
+                <VBox id="headerCard" class="supplierCard supplierCardPadded">
+                    <l:Grid id="headerGrid" defaultSpan="XL3 L4 M6 S12">
+                        <VBox id="hdrNameBox"><Label id="hdrNameLbl" text="{i18n>supplierName}" /><Text id="hdrNameVal" text="{SupplierName}" /></VBox>
+                        <VBox id="hdrEmailBox"><Label id="hdrEmailLbl" text="{i18n>supplierEmail}" /><Text id="hdrEmailVal" text="{SupplierEmail}" /></VBox>
+                        <VBox id="hdrOrgBox"><Label id="hdrOrgLbl" text="{i18n>purchasingOrganization}" /><Text id="hdrOrgVal" text="{PurchasingOrganization}" /></VBox>
+                        <VBox id="hdrCatBox"><Label id="hdrCatLbl" text="{i18n>supplierCategory}" /><Text id="hdrCatVal" text="{SupplierCategory}" /></VBox>
+                        <VBox id="hdrSubBox"><Label id="hdrSubLbl" text="{i18n>submittedOn}" /><Text id="hdrSubVal" text="{ path: 'SAP_CreatedDateTime', type: 'sap.ui.model.odata.type.DateTimeOffset', formatOptions: { style: 'medium' } }" /></VBox>
+                        <VBox id="hdrStatusBox"><Label id="hdrStatusLbl" text="{i18n>status}" />
+                            <Text id="hdrStatusVal" class="statusBadge" wrapping="false"
+                                        text="{ parts: [{path: 'Status'}, {path: 'Status_Text'}], formatter: '.formatter.statusText' }">
+                                        <customData>
+                                            <core:CustomData key="status" value="{ path: 'Status', formatter: '.formatter.statusCode' }" writeToDom="true" />
+                                        </customData>
+                                    </Text></VBox>
+                    </l:Grid>
+                </VBox>
+
+                <VBox id="generalCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
+                    <Title id="generalTitle" text="{i18n>tabGeneral}" class="sapUiSmallMarginBottom" />
+                    <l:Grid id="generalGrid" defaultSpan="XL3 L4 M6 S12">
+                            <VBox id="genIdBox"><Label id="genIdLbl" text="{i18n>supplierId}" /><Text id="genIdVal" text="{child>/general/SupplierID}" /></VBox>
+                            <VBox id="genNameBox"><Label id="genNameLbl" text="{i18n>supplierName}" /><Text id="genNameVal" text="{child>/general/SupplierName}" /></VBox>
+                            <VBox id="genA1Box"><Label id="genA1Lbl" text="{i18n>address1}" /><Text id="genA1Val" text="{child>/general/Address1}" /></VBox>
+                            <VBox id="genA2Box"><Label id="genA2Lbl" text="{i18n>address2}" /><Text id="genA2Val" text="{child>/general/Address2}" /></VBox>
+                            <VBox id="genCityBox"><Label id="genCityLbl" text="{i18n>city}" /><Text id="genCityVal" text="{child>/general/City}" /></VBox>
+                            <VBox id="genDistBox"><Label id="genDistLbl" text="{i18n>district}" /><Text id="genDistVal" text="{child>/general/District}" /></VBox>
+                            <VBox id="genStateBox"><Label id="genStateLbl" text="{i18n>state}" /><Text id="genStateVal" text="{child>/general/State}" /></VBox>
+                            <VBox id="genCountryBox"><Label id="genCountryLbl" text="{i18n>country}" /><Text id="genCountryVal" text="{child>/general/Country}" /></VBox>
+                            <VBox id="genPinBox"><Label id="genPinLbl" text="{i18n>pinCode}" /><Text id="genPinVal" text="{ path: 'child>/general/PINCode', formatter: '.formatter.pin' }" /></VBox>
+                    </l:Grid>
+                </VBox>
+
+                <VBox id="taxCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
+                    <Title id="taxTitle" text="{i18n>tabTax}" class="sapUiSmallMarginBottom" />
+                    <l:Grid id="taxGrid" defaultSpan="XL3 L4 M6 S12">
+                            <VBox id="taxGstinBox"><Label id="taxGstinLbl" text="{i18n>gstin}" /><Text id="taxGstinVal" text="{child>/tax/GSTIN}" /></VBox>
+                            <VBox id="taxPanBox"><Label id="taxPanLbl" text="{i18n>pan}" /><Text id="taxPanVal" text="{child>/tax/PAN}" /></VBox>
+                            <VBox id="taxFlagBox"><Label id="taxFlagLbl" text="{i18n>msmeFlag}" /><Text id="taxFlagVal" text="{child>/tax/MSMEFlag_Text}" /></VBox>
+                            <VBox id="taxNumBox"><Label id="taxNumLbl" text="{i18n>msmeNumber}" /><Text id="taxNumVal" text="{child>/tax/MSMENumber}" /></VBox>
+                            <VBox id="taxTypeBox"><Label id="taxTypeLbl" text="{i18n>msmeType}" /><Text id="taxTypeVal" text="{child>/tax/MSMEType}" /></VBox>
+                            <VBox id="taxValidBox"><Label id="taxValidLbl" text="{i18n>msmeValidTill}" /><Text id="taxValidVal" text="{ path: 'child>/tax/MSMEValidTill', type: 'sap.ui.model.type.Date', formatOptions: { style: 'medium', UTC: true } }" /></VBox>
+                    </l:Grid>
+                </VBox>
+
+                <VBox id="bankCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
+                    <Title id="bankTitle" text="{i18n>tabBank}" class="sapUiSmallMarginBottom" />
+                    <l:Grid id="bankGrid" defaultSpan="XL3 L4 M6 S12">
+                            <VBox id="bankHolderBox"><Label id="bankHolderLbl" text="{i18n>accountHolder}" /><Text id="bankHolderVal" text="{child>/bank/AccountHolder}" /></VBox>
+                            <VBox id="bankNameBox"><Label id="bankNameLbl" text="{i18n>bankName}" /><Text id="bankNameVal" text="{child>/bank/BankName}" /></VBox>
+                            <VBox id="bankNumBox"><Label id="bankNumLbl" text="{i18n>accountNumber}" /><Text id="bankNumVal" text="{child>/bank/AccountNumber}" /></VBox>
+                            <VBox id="bankIfscBox"><Label id="bankIfscLbl" text="{i18n>ifsc}" /><Text id="bankIfscVal" text="{child>/bank/IFSC}" /></VBox>
+                            <VBox id="bankTypeBox"><Label id="bankTypeLbl" text="{i18n>accountType}" /><Text id="bankTypeVal" text="{child>/bank/AccountType_Text}" /></VBox>
+                    </l:Grid>
+                </VBox>
+
+                <VBox id="contactCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
+                    <Title id="contactTitle" text="{i18n>tabContact}" class="sapUiSmallMarginBottom" />
+                    <l:Grid id="contactGrid" defaultSpan="XL3 L4 M6 S12">
+                            <VBox id="conNameBox"><Label id="conNameLbl" text="{i18n>contactName}" /><Text id="conNameVal" text="{child>/contact/Name}" /></VBox>
+                            <VBox id="conDesigBox"><Label id="conDesigLbl" text="{i18n>designation}" /><Text id="conDesigVal" text="{child>/contact/Designation}" /></VBox>
+                            <VBox id="conEmailBox"><Label id="conEmailLbl" text="{i18n>email}" /><Link id="conEmailVal" text="{child>/contact/Email}" href="{child>/contact/SAP_Mailto5}" /></VBox>
+                            <VBox id="conMobileBox"><Label id="conMobileLbl" text="{i18n>mobile}" /><Link id="conMobileVal" text="{child>/contact/Mobile}" href="{child>/contact/SAP_Tel6}" /></VBox>
+                    </l:Grid>
+                </VBox>
+
+                <VBox id="docsCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
+                    <Title id="docsTitle" text="{i18n>tabDocs}" class="sapUiSmallMarginBottom" />
+                    <l:Grid id="docsGrid" defaultSpan="XL3 L4 M6 S12">
+                            <VBox id="docGstBox"><Label id="docGstLbl" text="{i18n>gstDoc}" /><Text id="docGstVal" text="{child>/docs/GSTDocumentID}" /></VBox>
+                            <VBox id="docMsmeBox"><Label id="docMsmeLbl" text="{i18n>msmeDoc}" /><Text id="docMsmeVal" text="{child>/docs/MSMEDocumentID}" /></VBox>
+                            <VBox id="docBankBox"><Label id="docBankLbl" text="{i18n>bankDoc}" /><Text id="docBankVal" text="{child>/docs/BankChequeDocumentID}" /></VBox>
+                            <VBox id="docPh1Box"><Label id="docPh1Lbl" text="{i18n>pharmaDoc1}" /><Text id="docPh1Val" text="{child>/docs/PharmaCertificate1ID}" /></VBox>
+                            <VBox id="docPh2Box"><Label id="docPh2Lbl" text="{i18n>pharmaDoc2}" /><Text id="docPh2Val" text="{child>/docs/PharmaCertificate2ID}" /></VBox>
+                    </l:Grid>
+                </VBox>
+
+            </VBox>
+        </content>
+        <footer>
+            <Toolbar id="detailFooter" class="supplierFooter">
+                <ToolbarSpacer id="detailSpacer" />
+                <Button id="acceptBtn" text="{i18n>accept}" type="Accept" press=".onDecision($event, 'Approved')" />
+                <Button id="rejectBtn" text="{i18n>reject}" type="Reject" press=".onDecision($event, 'Rejected')" />
+                <Button id="sendBackBtn" text="{i18n>sendBack}" press=".onDecision($event, 'Sent Back')" />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

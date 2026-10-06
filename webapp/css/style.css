@@ -1,0 +1,175 @@
+/* ===== App shell: ToolHeader + SideNavigation ===== */
+/* Top header bar */
+.supplierHeader {
+    background-color: #2f5377 !important;
+    border-bottom: none;
+
+}
+.supplierHeader .sapMTitle,
+.supplierHeader .sapMTitle * {
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 1rem;
+}
+.supplierHeaderLogo {
+    margin-right: 0.75rem;
+    object-fit: contain;
+    width: auto;
+}
+
+
+.appHeaderIcon {
+    color: #ffffff !important;
+    margin-right: 0.5rem;
+}
+
+.appHeaderTitle {
+    color: #ffffff !important;
+}
+
+#toolHeader {
+    background: #0a6ed1 !important;
+}
+
+#sideNavigation {
+    background: #f7f9fb;
+}
+
+/* ===== Supplier Onboarding – card layout ===== */
+
+.onboardingPage {
+    background: #f2f4f7;
+}
+
+.onboardingWrapper {
+    width: 100%;
+    padding: 2.5rem 1rem;
+    box-sizing: border-box;
+}
+
+.onboardingCard {
+    width: 100%;
+    max-width: 46rem;
+    background: #ffffff;
+    border-radius: 1rem;
+    overflow: hidden;
+    box-shadow: 0 0.5rem 2rem rgba(15, 40, 90, 0.12);
+}
+
+/* Gradient header */
+.onboardingCardHeader {
+    padding: 2rem 2rem 1.75rem 2rem;
+    background: linear-gradient(135deg, #0a6ed1 0%, #085caf 55%, #06407c 100%);
+    color: #ffffff;
+}
+
+.onboardingAvatar {
+    margin-bottom: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.18) !important;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.onboardingAvatar .sapMAvatarIcon {
+    color: #ffffff !important;
+}
+
+.onboardingCardTitle {
+    color: #ffffff !important;
+    font-size: 1.375rem !important;
+    font-weight: 700 !important;
+}
+
+.onboardingCardSubtitle {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* Body */
+.onboardingCardBody {
+    padding: 1.75rem 2rem 0.5rem 2rem;
+}
+
+.onboardingHint {
+    margin-bottom: 1rem;
+}
+
+.onboardingForm .sapUiFormLabel {
+    font-weight: 600;
+    color: #32363a;
+}
+
+.onboardingForm input.sapMInputBaseInner {
+    border-radius: 0.5rem;
+}
+
+/* Footer */
+.onboardingCardFooter {
+    background: #fafbfc;
+    border-top: 1px solid #e5e9ee;
+    padding: 0.75rem 1.5rem;
+}
+
+/* Small screens: header padding tighter */
+@media (max-width: 599px) {
+    .onboardingCardHeader,
+    .onboardingCardBody {
+        padding-left: 1.25rem;
+        padding-right: 1.25rem;
+    }
+}
+
+/* Padded page area */
+.supplierContent {
+    padding: 1rem 1.5rem;
+}
+
+/* White card look for table / form / details */
+.supplierCard {
+    background: var(--sapGroup_ContentBackground, #fff);
+    border: 1px solid var(--sapList_BorderColor, #d9d9d9);
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+
+.supplierCard.supplierCardPadded {
+    padding: 1rem 1.5rem;
+}
+
+/* Space between the Create button and the table */
+.supplierActionBar {
+    margin-bottom: 1rem;
+}
+
+/* Footer buttons: side padding and gap */
+.supplierFooter {
+    padding: 0 1.5rem;
+}
+.supplierFooter .sapMBtn + .sapMBtn {
+    margin-left: 0.5rem;
+}
+
+.supplierFormNarrow {
+    max-width: 56rem;
+}
+
+/* ===== Status badges (one colour per status code, set via data-status) ===== */
+.statusBadge {
+    display: inline-block;
+    padding: 0.125rem 0.625rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+}
+.statusBadge[data-status="1"] { background: #e5e5e5; color: #354a5f !important; } /* Submitted */
+.statusBadge[data-status="2"] { background: #fff3b8; color: #8a6d00 !important; } /* Drafted by Supplier */
+.statusBadge[data-status="3"] { background: #d1efff; color: #0a6ed1 !important; } /* Under Review of Purchase */
+.statusBadge[data-status="4"] { background: #cdeccb; color: #256f3a !important; } /* Approved by Purchase */
+.statusBadge[data-status="5"] { background: #ffd6d6; color: #aa0808 !important; } /* Rejected by Purchase */
+.statusBadge[data-status="6"] { background: #ffe4bd; color: #a35b00 !important; } /* Sent Back by Purchase */
+.statusBadge[data-status="7"] { background: #e1d6f5; color: #5b3a9c !important; } /* Under Review of Finance */
+.statusBadge[data-status="8"] { background: #b9e8e0; color: #0b6b5e !important; } /* Approved by Finance */
+.statusBadge[data-status="9"] { background: #f9cfe3; color: #a3135f !important; } /* Rejected by Finance */
+.statusBadge[data-status="10"] { background: #f3dcc6; color: #8a4a14 !important; } /* Sent Back by Finance */
+.statusBadge[data-status="11"] { background: #1e7a3c; color: #ffffff !important; } /* Overall Approved */

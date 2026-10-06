@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="Aggregation"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="Capabilities"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="Measures"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ODM',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.ODM.v1" Alias="SAP__ODM"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="Validation"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="YY1_SUPPLIER_ONBOARDING_CDS" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="I_Scbo_ILM_Status_TextType" sap:label="Text for ILM Status" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="language"/>
+                    <PropertyRef Name="code"/>
+                </Key>
+                <Property Name="language" Type="Edm.String" Nullable="false" MaxLength="2" sap:label="Lang." sap:quickinfo="Language Key"/>
+                <Property Name="code" Type="Edm.String" Nullable="false" MaxLength="10" sap:display-format="UpperCase" sap:text="description" sap:label="Lower Value" sap:quickinfo="Values for Domains: Single Value/Lower Limit"/>
+                <Property Name="description" Type="Edm.String" MaxLength="60" sap:label="Short Description" sap:quickinfo="Short Text for Fixed Values"/>
+            </EntityType>
+            <EntityType Name="P_Scbo_UserType" sap:label="User" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="name"/>
+                </Key>
+                <Property Name="name" Type="Edm.String" Nullable="false" MaxLength="12" sap:display-format="UpperCase" sap:label="User" sap:quickinfo="User Name in User Master Record"/>
+                <Property Name="description" Type="Edm.String" MaxLength="80" sap:label="Description" sap:quickinfo="Description of the Technical User Account"/>
+            </EntityType>
+            <EntityType Name="YY1_SUPPLIER_ONBOARDINGType" sap:label="Supplier Onboarding" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="SAP_UUID"/>
+                </Key>
+                <Property Name="SAP_UUID" Type="Edm.Guid" Nullable="false" sap:label="UUID" sap:quickinfo="16 Byte UUID in 16 Bytes (Raw Format)"/>
+                <Property Name="SAP_Description" Type="Edm.String" MaxLength="80" sap:label="Description"/>
+                <Property Name="SAP_CreatedDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Created On" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SAP_CreatedByUser" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:text="SAP_CreatedByUser_Text" sap:label="Created By" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SAP_CreatedByUser_Text" Type="Edm.String" MaxLength="80" sap:label="Description" sap:quickinfo="Description of the Technical User Account" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SAP_LastChangedDateTime" Type="Edm.DateTimeOffset" Precision="7" sap:label="Last Changed On" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SAP_LastChangedByUser" Type="Edm.String" MaxLength="12" sap:display-format="UpperCase" sap:text="SAP_LastChangedByUser_Text" sap:label="Last Changed By" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SAP_LastChangedByUser_Text" Type="Edm.String" MaxLength="80" sap:label="Description" sap:quickinfo="Description of the Technical User Account" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SAP_LifecycleStatus" Type="Edm.String" MaxLength="1" sap:display-format="UpperCase" sap:text="SAP_LifecycleStatus_Text" sap:label="Lifecycle Status" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="SAP_LifecycleStatus_Text" Type="Edm.String" MaxLength="60" sap:label="Short Description" sap:quickinfo="Short Text for Fixed Values" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="ID" Type="Edm.String" MaxLength="10" sap:display-format="NonNegative" sap:label="ID"/>
+                <Property Name="REQID" Type="Edm.String" MaxLength="20" sap:label="REQ ID"/>
+                <Property Name="SupplierName" Type="Edm.String" MaxLength="50" sap:label="Supplier Name"/>
+                <Property Name="SupplierEmail" Type="Edm.String" MaxLength="50" sap:label="Supplier Email"/>
+                <Property Name="SAP_Mailto10" Type="Edm.String" MaxLength="57" sap:creatable="false" sap:updatable="false"/>
+                <Property Name="PurchasingOrganization" Type="Edm.String" MaxLength="20" sap:label="Purchasing Organization"/>
+                <Property Name="SupplierCategory" Type="Edm.String" MaxLength="20" sap:label="Supplier Category"/>
+                <NavigationProperty Name="to_ILM_Status_Text" Relationship="YY1_SUPPLIER_ONBOARDING_CDS.assoc_7A57AC11F2328355FC697348DC6AA6BE" FromRole="FromRole_assoc_7A57AC11F2328355FC697348DC6AA6BE" ToRole="ToRole_assoc_7A57AC11F2328355FC697348DC6AA6BE"/>
+                <NavigationProperty Name="to_SAPSysAdminDataChangeUser" Relationship="YY1_SUPPLIER_ONBOARDING_CDS.assoc_8FBCDAA470394A471F857CB634C9A990" FromRole="FromRole_assoc_8FBCDAA470394A471F857CB634C9A990" ToRole="ToRole_assoc_8FBCDAA470394A471F857CB634C9A990"/>
+                <NavigationProperty Name="to_SAPSysAdminDataCreateUser" Relationship="YY1_SUPPLIER_ONBOARDING_CDS.assoc_7D85D098231F26EB3490E986C530B2AA" FromRole="FromRole_assoc_7D85D098231F26EB3490E986C530B2AA" ToRole="ToRole_assoc_7D85D098231F26EB3490E986C530B2AA"/>
+            </EntityType>
+            <Association Name="assoc_8FBCDAA470394A471F857CB634C9A990" sap:content-version="1">
+                <End Type="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType" Multiplicity="1" Role="FromRole_assoc_8FBCDAA470394A471F857CB634C9A990"/>
+                <End Type="YY1_SUPPLIER_ONBOARDING_CDS.P_Scbo_UserType" Multiplicity="0..1" Role="ToRole_assoc_8FBCDAA470394A471F857CB634C9A990"/>
+            </Association>
+            <Association Name="assoc_7D85D098231F26EB3490E986C530B2AA" sap:content-version="1">
+                <End Type="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType" Multiplicity="1" Role="FromRole_assoc_7D85D098231F26EB3490E986C530B2AA"/>
+                <End Type="YY1_SUPPLIER_ONBOARDING_CDS.P_Scbo_UserType" Multiplicity="0..1" Role="ToRole_assoc_7D85D098231F26EB3490E986C530B2AA"/>
+            </Association>
+            <Association Name="assoc_7A57AC11F2328355FC697348DC6AA6BE" sap:content-version="1">
+                <End Type="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType" Multiplicity="1" Role="FromRole_assoc_7A57AC11F2328355FC697348DC6AA6BE"/>
+                <End Type="YY1_SUPPLIER_ONBOARDING_CDS.I_Scbo_ILM_Status_TextType" Multiplicity="0..1" Role="ToRole_assoc_7A57AC11F2328355FC697348DC6AA6BE"/>
+            </Association>
+            <EntityContainer Name="YY1_SUPPLIER_ONBOARDING_CDS_Entities" m:IsDefaultEntityContainer="true" sap:message-scope-supported="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="I_Scbo_ILM_Status_Text" EntityType="YY1_SUPPLIER_ONBOARDING_CDS.I_Scbo_ILM_Status_TextType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1"/>
+                <EntitySet Name="P_Scbo_User" EntityType="YY1_SUPPLIER_ONBOARDING_CDS.P_Scbo_UserType" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:addressable="false" sap:content-version="1"/>
+                <EntitySet Name="YY1_SUPPLIER_ONBOARDING" EntityType="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType" sap:searchable="true" sap:content-version="1"/>
+                <AssociationSet Name="assoc_7A57AC11F2328355FC697348DC6AA6BE" Association="YY1_SUPPLIER_ONBOARDING_CDS.assoc_7A57AC11F2328355FC697348DC6AA6BE" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="YY1_SUPPLIER_ONBOARDING" Role="FromRole_assoc_7A57AC11F2328355FC697348DC6AA6BE"/>
+                    <End EntitySet="I_Scbo_ILM_Status_Text" Role="ToRole_assoc_7A57AC11F2328355FC697348DC6AA6BE"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_8FBCDAA470394A471F857CB634C9A990" Association="YY1_SUPPLIER_ONBOARDING_CDS.assoc_8FBCDAA470394A471F857CB634C9A990" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="YY1_SUPPLIER_ONBOARDING" Role="FromRole_assoc_8FBCDAA470394A471F857CB634C9A990"/>
+                    <End EntitySet="P_Scbo_User" Role="ToRole_assoc_8FBCDAA470394A471F857CB634C9A990"/>
+                </AssociationSet>
+                <AssociationSet Name="assoc_7D85D098231F26EB3490E986C530B2AA" Association="YY1_SUPPLIER_ONBOARDING_CDS.assoc_7D85D098231F26EB3490E986C530B2AA" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="YY1_SUPPLIER_ONBOARDING" Role="FromRole_assoc_7D85D098231F26EB3490E986C530B2AA"/>
+                    <End EntitySet="P_Scbo_User" Role="ToRole_assoc_7D85D098231F26EB3490E986C530B2AA"/>
+                </AssociationSet>
+                <FunctionImport Name="YY1_SUPPLIER_ONBOARDINGSap_upsert" ReturnType="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType" EntitySet="YY1_SUPPLIER_ONBOARDING" m:HttpMethod="POST">
+                    <Parameter Name="SAP_Description" Type="Edm.String" Mode="In" MaxLength="80" sap:label="Text of length 80"/>
+                    <Parameter Name="ID" Type="Edm.String" Mode="In" MaxLength="10" sap:label="Numeric length 10"/>
+                    <Parameter Name="REQID" Type="Edm.String" Mode="In" MaxLength="20" sap:label="Text of length 20"/>
+                    <Parameter Name="SupplierName" Type="Edm.String" Mode="In" MaxLength="50" sap:label="Text of length 50"/>
+                    <Parameter Name="SupplierEmail" Type="Edm.String" Mode="In" MaxLength="50" sap:label="Text of length 50"/>
+                    <Parameter Name="PurchasingOrganization" Type="Edm.String" Mode="In" MaxLength="20" sap:label="Text of length 20"/>
+                    <Parameter Name="SupplierCategory" Type="Edm.String" Mode="In" MaxLength="20" sap:label="Text of length 20"/>
+                </FunctionImport>
+            </EntityContainer>
+            <Annotation Term="Core.SchemaVersion" String="1.0.0" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <Annotations Target="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDING_CDS_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true"/>
+            </Annotations>
+            <Annotations Target="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType/ID" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+            </Annotations>
+            <Annotations Target="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType/REQID" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.FieldControl" EnumMember="Common.FieldControlType/Mandatory"/>
+            </Annotations>
+            <Annotations Target="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDING_CDS_Entities/YY1_SUPPLIER_ONBOARDING" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Capabilities.NavigationRestrictions">
+                    <Record>
+                        <PropertyValue Property="RestrictedProperties">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="to_ILM_Status_Text"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="to_SAPSysAdminDataChangeUser"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                                <Record>
+                                    <PropertyValue Property="NavigationProperty" NavigationPropertyPath="to_SAPSysAdminDataCreateUser"/>
+                                    <PropertyValue Property="InsertRestrictions">
+                                        <Record>
+                                            <PropertyValue Property="Insertable" Bool="false"/>
+                                        </Record>
+                                    </PropertyValue>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDINGType" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Common.SemanticKey">
+                    <Collection>
+                        <PropertyPath>REQID</PropertyPath>
+                        <PropertyPath>ID</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="YY1_SUPPLIER_ONBOARDING_CDS.YY1_SUPPLIER_ONBOARDING_CDS_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm"/>
+            <atom:link rel="self" href="/sap/opu/odata/sap/YY1_SUPPLIER_ONBOARDING_CDS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="/sap/opu/odata/sap/YY1_SUPPLIER_ONBOARDING_CDS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>

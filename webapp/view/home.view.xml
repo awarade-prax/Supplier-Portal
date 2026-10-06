@@ -1,0 +1,6 @@
+<mvc:View xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m">
+    <Page id="homePage" title="{i18n>navHome}">
+        <IllustratedMessage id="homeMsg" illustrationType="sapIllus-SimpleBalloon"
+            title="{i18n>homeTitle}" description="{i18n>homeDesc}" />
+    </Page>
+</mvc:View>

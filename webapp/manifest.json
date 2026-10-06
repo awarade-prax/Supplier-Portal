@@ -1,0 +1,103 @@
+{
+  "_version": "1.86.0",
+  "sap.app": {
+    "id": "supplierportal",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": { "version": "0.0.1" },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:basic",
+      "version": "1.32.0",
+      "toolsId": "e46a51fd-a464-4c10-9dc2-68040062ba51"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/YY1_SUPPLIER_ONBOARDING_CDS/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      },
+      "bpService": {
+        "uri": "/sap/opu/odata/sap/API_BUSINESS_PARTNER/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "supplierportal-manage": {
+          "semanticObject": "supplierportal",
+          "action": "manage",
+          "title": "{{supplierportal-manage.flpTitle}}",
+          "subTitle": "{{supplierportal-manage.flpSubtitle}}",
+          "signature": { "parameters": {}, "additionalParameters": "allowed" }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": { "icon": "", "favIcon": "", "phone": "", "phone@2": "", "tablet": "", "tablet@2": "" },
+    "deviceTypes": { "desktop": true, "tablet": true, "phone": true }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.148.6",
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.ui.layout": {}, "sap.tnt": {}, "sap.ui.comp": {}, "sap.f": {}, "sap.ui.table": {} }
+    },
+    "contentDensities": { "compact": true, "cozy": true },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": { "bundleName": "supplierportal.i18n.i18n" }
+      },
+      "": { "dataSource": "mainService", "preload": true, "settings": {} },
+      "bp": {
+        "dataSource": "bpService",
+        "preload": false,
+        "settings": { "defaultBindingMode": "OneWay", "useBatch": false }
+      }
+    },
+    "resources": { "css": [{ "uri": "css/style.css" }] },
+    "routing": {
+      "config": {
+        "routerClass": "sap.m.routing.Router",
+        "controlAggregation": "pages",
+        "controlId": "pageContainer",
+        "transition": "slide",
+        "type": "View",
+        "viewType": "XML",
+        "path": "supplierportal.view",
+        "async": true
+      },
+      "routes": [
+        { "name": "home", "pattern": "", "target": ["home"] },
+        { "name": "allList", "pattern": "all:?query:", "target": ["allList"] },
+        { "name": "list", "pattern": "list:?query:", "target": ["list"] },
+        { "name": "financeList", "pattern": "finance:?query:", "target": ["financeList"] },
+        { "name": "create", "pattern": "create", "target": ["create"] },
+        { "name": "detail", "pattern": "detail/{id}", "target": ["detail"] },
+        { "name": "allDetail", "pattern": "all/detail/{id}", "target": ["detail"] }
+      ],
+      "targets": {
+        "home": { "id": "home", "name": "home" },
+        "allList": { "id": "allList", "name": "list" },
+        "list": { "id": "list", "name": "list" },
+        "financeList": { "id": "financeList", "name": "list" },
+        "create": { "id": "onboardingform", "name": "onboardingform" },
+        "detail": { "id": "detail", "name": "detail" }
+      }
+    },
+    "rootView": { "viewName": "supplierportal.view.App", "type": "XML", "id": "App", "async": true }
+  },
+  "sap.cloud": { "public": true, "service": "supplierportal" }
+}

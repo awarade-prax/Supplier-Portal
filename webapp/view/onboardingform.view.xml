@@ -1,0 +1,123 @@
+<mvc:View
+    controllerName="supplierportal.controller.onboardingform"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:form="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+>
+    <Page
+        id="page"
+        title="{i18n>onboardingFormTitle}"
+        showNavButton="true"
+        navButtonPress=".onCancel"
+    >
+        <content>
+            <VBox
+                id="formContent"
+                class="supplierContent"
+            >
+                <form:SimpleForm
+                    id="onboardingForm"
+                    class="supplierCard supplierCardPadded supplierFormNarrow"
+                    title="{i18n>onboardingFormTitle}"
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanXL="12"
+                    labelSpanL="12"
+                    labelSpanM="12"
+                    labelSpanS="12"
+                    adjustLabelSpan="false"
+                    emptySpanXL="0"
+                    emptySpanL="0"
+                    emptySpanM="0"
+                    emptySpanS="0"
+                    columnsXL="2"
+                    columnsL="2"
+                    columnsM="1"
+                    singleContainerFullSize="false"
+                >
+                    <!-- Each empty Title starts a new grid column; it shows no heading -->
+                    <core:Title
+                        id="col1"
+                        text=""
+                    />
+                    <Label
+                        id="supplierNameLabel"
+                        text="{i18n>supplierName}"
+                        required="true"
+                    />
+                    <Input
+                        id="supplierNameInput"
+                        value="{ path: 'onboarding>/SupplierName', type: 'sap.ui.model.type.String', constraints: { minLength: 1 } }"
+                        valueStateText="{i18n>fieldRequired}"
+                        placeholder="{i18n>supplierNamePlaceholder}"
+                    />
+
+                    <core:Title
+                        id="col2"
+                        text=""
+                    />
+                    <Label
+                        id="supplierEmailLabel"
+                        text="{i18n>supplierEmail}"
+                        required="true"
+                    />
+                    <Input
+                        id="supplierEmailInput"
+                        type="Email"
+                        value="{ path: 'onboarding>/SupplierEmail', type: 'sap.ui.model.type.String', constraints: { minLength: 1 } }"
+                        valueStateText="{i18n>fieldRequired}"
+                        placeholder="{i18n>supplierEmailPlaceholder}"
+                    />
+
+                    <core:Title
+                        id="col3"
+                        text=""
+                    />
+                    <Label
+                        id="purchasingOrgLabel"
+                        text="{i18n>purchasingOrganization}"
+                    />
+                    <Input
+                        id="purchasingOrgInput"
+                        value="{onboarding>/PurchasingOrganization}"
+                        placeholder="{i18n>purchasingOrganizationPlaceholder}"
+                    />
+
+                    <core:Title
+                        id="col4"
+                        text=""
+                    />
+                    <Label
+                        id="supplierCategoryLabel"
+                        text="{i18n>supplierCategory}"
+                    />
+                    <Input
+                        id="supplierCategoryInput"
+                        value="{onboarding>/SupplierCategory}"
+                        placeholder="{i18n>supplierCategoryPlaceholder}"
+                    />
+                </form:SimpleForm>
+            </VBox>
+        </content>
+        <footer>
+            <Toolbar
+                id="onboardingFormFooter"
+                class="supplierFooter"
+            >
+                <ToolbarSpacer id="onboardingFormFooterSpacer" />
+                <Button
+                    id="submitButton"
+                    text="{i18n>submit}"
+                    type="Emphasized"
+                    press=".onSubmit"
+                />
+                <Button
+                    id="cancelButton"
+                    text="{i18n>cancel}"
+                    press=".onCancel"
+                />
+            </Toolbar>
+        </footer>
+    </Page>
+</mvc:View>

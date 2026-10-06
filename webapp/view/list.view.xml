@@ -1,0 +1,102 @@
+<mvc:View controllerName="supplierportal.controller.list"
+    xmlns:mvc="sap.ui.core.mvc" xmlns="sap.m" xmlns:core="sap.ui.core"
+    xmlns:f="sap.f" xmlns:table="sap.ui.table" xmlns:rowmodes="sap.ui.table.rowmodes"
+    xmlns:sfb="sap.ui.comp.smartfilterbar" xmlns:st="sap.ui.comp.smarttable">
+    <Page id="listPage" showHeader="false" enableScrolling="false">
+        <f:DynamicPage id="dynamicPage" headerExpanded="true" fitContent="true"
+            toggleHeaderOnTitleClick="false">
+
+            <!-- Fixed title with Create button -->
+            <f:title>
+                <f:DynamicPageTitle id="dynamicPageTitle">
+                    <f:heading>
+                        <Title id="listTitle" text="{view>/title}" />
+                    </f:heading>
+                </f:DynamicPageTitle>
+            </f:title>
+
+            <!-- Fixed filter area -->
+            <f:header>
+                <f:DynamicPageHeader id="dynamicPageHeader" pinnable="true">
+                    <sfb:SmartFilterBar id="smartFilterBar" entitySet="YY1_SUPPLIER_ONBOARDING"
+                        persistencyKey="supplierportal.list.filterbar"
+                        enableBasicSearch="false" useToolbar="false">
+                        <sfb:controlConfiguration>
+                            <sfb:ControlConfiguration id="cfgReqId" key="REQID" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="cfgName" key="SupplierName" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="cfgEmail" key="SupplierEmail" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="cfgStatus" key="Status" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="cfgCreated" key="SAP_CreatedDateTime" visibleInAdvancedArea="true" />
+                        </sfb:controlConfiguration>
+                    </sfb:SmartFilterBar>
+                </f:DynamicPageHeader>
+            </f:header>
+
+            <!-- Only this table scrolls -->
+            <f:content>
+                <st:SmartTable id="smartTable" entitySet="YY1_SUPPLIER_ONBOARDING"
+                    smartFilterId="smartFilterBar" tableType="Table"
+                    header="{view>/title}" showRowCount="true"
+                    enableAutoBinding="true" beforeRebindTable=".onBeforeRebindTable" useVariantManagement="false"
+                    useTablePersonalisation="true" enableExport="true"
+                    requestAtLeastFields="SAP_UUID,REQID,ID,SupplierName,Status,Status_Text,SupplierEmail,PurchasingOrganization,SupplierCategory">
+                    <table:Table id="onboardingTable"
+                        selectionMode="None" rowActionCount="1">
+                        <table:rowMode>
+                            <rowmodes:Auto id="rowModeAuto" />
+                        </table:rowMode>
+                        <table:columns>
+                            <table:Column id="colId" width="8rem" sortProperty="ID" filterProperty="ID">
+                                <Label id="hId" text="{i18n>id}" />
+                                <table:template><Text id="tId" text="{ID}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"ID","leadingProperty":"ID","columnIndex":0\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="colReqId" width="12rem" sortProperty="REQID" filterProperty="REQID">
+                                <Label id="hReqId" text="{i18n>onboardingId}" />
+                                <table:template><Text id="tReqId" text="{REQID}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"REQID","leadingProperty":"REQID","columnIndex":1\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="colName" width="14rem" sortProperty="SupplierName" filterProperty="SupplierName">
+                                <Label id="hName" text="{i18n>supplierName}" />
+                                <table:template><Text id="tName" text="{SupplierName}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"SupplierName","leadingProperty":"SupplierName","columnIndex":2\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="colStatus" width="9rem" sortProperty="Status" filterProperty="Status">
+                                <Label id="hStatus" text="{i18n>status}" />
+                                <table:template>
+                                    <Text id="tStatus" class="statusBadge" wrapping="false"
+                                        text="{ parts: [{path: 'Status'}, {path: 'Status_Text'}], formatter: '.formatter.statusText' }">
+                                        <customData>
+                                            <core:CustomData key="status" value="{ path: 'Status', formatter: '.formatter.statusCode' }" writeToDom="true" />
+                                        </customData>
+                                    </Text>
+                                </table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"Status","leadingProperty":"Status","columnIndex":3\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="colMail" width="18rem" sortProperty="SupplierEmail" filterProperty="SupplierEmail">
+                                <Label id="hMail" text="{i18n>supplierEmail}" />
+                                <table:template><Text id="tMail" text="{SupplierEmail}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"SupplierEmail","leadingProperty":"SupplierEmail","columnIndex":4\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="colOrg" width="14rem" sortProperty="PurchasingOrganization" filterProperty="PurchasingOrganization">
+                                <Label id="hOrg" text="{i18n>purchasingOrganization}" />
+                                <table:template><Text id="tOrg" text="{PurchasingOrganization}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"PurchasingOrganization","leadingProperty":"PurchasingOrganization","columnIndex":5\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="colCat" width="14rem" sortProperty="SupplierCategory" filterProperty="SupplierCategory">
+                                <Label id="hCat" text="{i18n>supplierCategory}" />
+                                <table:template><Text id="tCat" text="{SupplierCategory}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"SupplierCategory","leadingProperty":"SupplierCategory","columnIndex":6\}' /></table:customData>
+                            </table:Column>
+                        </table:columns>
+                        <table:rowActionTemplate>
+                            <table:RowAction id="rowAction">
+                                <table:RowActionItem id="rowActionNav" type="Navigation" press=".onRowPress" />
+                            </table:RowAction>
+                        </table:rowActionTemplate>
+                    </table:Table>
+                </st:SmartTable>
+            </f:content>
+        </f:DynamicPage>
+    </Page>
+</mvc:View>

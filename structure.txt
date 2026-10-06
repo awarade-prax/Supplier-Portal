@@ -1,0 +1,45 @@
+.
+├── eslint.config.mjs
+├── mail-srv
+│   ├── package.json
+│   ├── package-lock.json
+│   └── server.js
+├── mta.yaml
+├── package.json
+├── package-lock.json
+├── README.md
+├── structure.txt
+├── tsconfig.json
+├── ui5-deploy.yaml
+├── ui5-local.yaml
+├── ui5-mock.yaml
+├── ui5.yaml
+├── webapp
+│   ├── Component.ts
+│   ├── controller
+│   │   ├── App.controller.ts
+│   │   └── onboardingform.controller.ts
+│   ├── css
+│   │   └── style.css
+│   ├── i18n
+│   │   └── i18n.properties
+│   ├── index.html
+│   ├── localService
+│   │   └── mainService
+│   │       └── metadata.xml
+│   ├── manifest.json
+│   ├── model
+│   │   └── models.ts
+│   ├── test
+│   │   ├── integration
+│   │   │   ├── NavigationJourney.ts
+│   │   │   └── pages
+│   │   └── unit
+│   │       └── controller
+│   └── view
+│       ├── App.view.xml
+│       └── onboardingform.view.xml
+├── xs-app.json
+└── xs-security.json
+
+15 directories, 28 files

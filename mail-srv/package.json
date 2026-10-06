@@ -1,0 +1,20 @@
+{
+  "name": "mail-srv",
+  "version": "1.0.0",
+  "description": "Sends supplier onboarding confirmation emails via SMTP",
+  "main": "server.js",
+  "engines": {
+    "node": "^20"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "nodemailer": "^6.9.14",
+    "dotenv": "^16.4.5",
+    "@sap/xsenv": "^5.4.0",
+    "@sap/xssec": "^4.2.4",
+    "passport": "^0.7.0"
+  }
+}

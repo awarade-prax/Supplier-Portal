@@ -1,0 +1,69 @@
+<mvc:View
+    controllerName="supplierportal.controller.App"
+    displayBlock="true"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:tnt="sap.tnt"
+>
+    <tnt:ToolPage id="toolPage">
+        <tnt:header>
+            <tnt:ToolHeader
+                id="toolHeader"
+                class="supplierHeader"
+            >
+                <Image
+                    id="headerLogo"
+                    alt="{i18n>appHeader}"
+                    height="6rem"
+                    class="supplierHeaderLogo"
+                />
+                <Title
+                    id="appHeaderTitle"
+                    text="{i18n>appHeader}"
+                />
+            </tnt:ToolHeader>
+        </tnt:header>
+        <tnt:sideContent>
+            <tnt:SideNavigation
+                id="sideNav"
+                itemSelect=".onItemSelect"
+            >
+                <tnt:NavigationList id="navList">
+                    <tnt:NavigationListItem
+                        id="navHome"
+                        text="{i18n>navHome}"
+                        icon="sap-icon://home"
+                        key="home"
+                    />
+                    <tnt:NavigationListItem
+                        id="navCreate"
+                        text="{i18n>navCreateOnboarding}"
+                        icon="sap-icon://add-document"
+                        key="create"
+                    />
+                    <tnt:NavigationListItem
+                        id="navAll"
+                        text="{i18n>navAll}"
+                        icon="sap-icon://list"
+                        key="allList"
+                    />
+                    <tnt:NavigationListItem
+                        id="navList1"
+                        text="{i18n>navOnboardings}"
+                        icon="sap-icon://request"
+                        key="list"
+                    />
+                    <tnt:NavigationListItem
+                        id="navFinance"
+                        text="{i18n>navFinance}"
+                        icon="sap-icon://money-bills"
+                        key="financeList"
+                    />
+                </tnt:NavigationList>
+            </tnt:SideNavigation>
+        </tnt:sideContent>
+        <tnt:mainContents>
+            <NavContainer id="pageContainer" />
+        </tnt:mainContents>
+    </tnt:ToolPage>
+</mvc:View>

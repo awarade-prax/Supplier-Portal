@@ -46,6 +46,11 @@ export interface OnboardingData {
     bank: Row;
 }
 
+export interface CreatedSupplier {
+    bpNumber: string;
+    supplierNumber: string;
+}
+
 const clip = (v: unknown, n: number): string => String(v ?? "").trim().slice(0, n);
 
 /** first non-empty value among the candidate field names */
@@ -90,9 +95,9 @@ function read(model: ODataModel, path: string, filters: Filter[]): Promise<any[]
  * the data is complete) in SAP and adds the purchasing organization to the generated supplier.
  * Safe to retry: if a BP with this onboarding ID already exists it is reused.
  * Rejects on any failure, so the caller can show the error and let Finance retry.
- * Returns the BP / supplier number.
+ * Returns the BP and supplier numbers.
  */
-export async function createSupplierInSAP(model: ODataModel, d: OnboardingData): Promise<string> {
+export async function createSupplierInSAP(model: ODataModel, d: OnboardingData): Promise<CreatedSupplier> {
     await model.metadataLoaded();
 
     // idempotency: onboarding ID is saved as external BP number
@@ -173,5 +178,8 @@ export async function createSupplierInSAP(model: ODataModel, d: OnboardingData):
             console.warn(`Purchasing organization ${d.purchasingOrg} could not be added to supplier ${bpNumber} - skipped.`, e);
         }
     }
-    return bpNumber;
+    return {
+        bpNumber,
+        supplierNumber: bpNumber
+    };
 }

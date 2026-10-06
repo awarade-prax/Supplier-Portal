@@ -24,7 +24,8 @@ const CHILD_SETS: Record<string, string> = {
     tax: "YY1_TAXREGISTRATION_SUPPLIER_O",
     bank: "YY1_BANKDATA_SUPPLIER_ONBOARDI",
     contact: "YY1_PURCHASECONTACT_SUPPLIER_O",
-    docs: "YY1_DOCUMENTS_SUPPLIER_ONBOARD"
+    docs: "YY1_DOCUMENTS_SUPPLIER_ONBOARD",
+    sapCreation: "YY1_SAPCREATION_SUPPLIER_ONBOA"
 };
 
 // current Status code -> (decision -> new Status code)
@@ -77,7 +78,7 @@ export default class detail extends Controller {
     }
 
     private _emptyChildren(): Record<string, object> {
-        return { general: {}, tax: {}, bank: {}, contact: {}, docs: {} };
+        return { general: {}, tax: {}, bank: {}, contact: {}, docs: {}, sapCreation: {} };
     }
 
     private _onMatched(e: Route$PatternMatchedEvent): void {
@@ -132,8 +133,10 @@ export default class detail extends Controller {
         // Finance approval = final approval -> supplier must be created in SAP first
         const createInSap = current === "7" && decision === "Approved";
         let sapStepFailed = false;
+        let sapCreationUpdateFailed = false;
         let approvalSaved = false;
         let bpNumber = "";
+        let supplierNumber = "";
 
         view.setBusy(true);
         try {
@@ -142,7 +145,7 @@ export default class detail extends Controller {
             if (createInSap) {
                 sapStepFailed = true;
                 const child = (view.getModel("child") as JSONModel).getData();
-                bpNumber = await createSupplierInSAP(view.getModel("bp") as ODataModel, {
+                const createdSupplier = await createSupplierInSAP(view.getModel("bp") as ODataModel, {
                     id: supplierId,
                     name: String(context.getProperty("SupplierName") ?? ""),
                     email: String(context.getProperty("SupplierEmail") ?? ""),
@@ -151,6 +154,11 @@ export default class detail extends Controller {
                     tax: child.tax ?? {},
                     bank: child.bank ?? {}
                 });
+                bpNumber = createdSupplier.bpNumber;
+                supplierNumber = createdSupplier.supplierNumber;
+                sapCreationUpdateFailed = true;
+                await this._updateSAPCreation(model, supplierId, bpNumber, supplierNumber);
+                sapCreationUpdateFailed = false;
                 sapStepFailed = false;
             }
 
@@ -175,10 +183,15 @@ export default class detail extends Controller {
             //    Finance approve sends 8; backend logic turns it into 11.
             await this._update(model, context.getPath(), { Status: target.code });
 
-            MessageToast.show(bpNumber
-                ? `Onboarding approved. Supplier ${bpNumber} created in SAP.`
-                : `Onboarding ${target.text.toLowerCase()}.`);
-            this.onNavBack();
+            if (bpNumber || supplierNumber) {
+                MessageBox.success(
+                    `Onboarding approved and created in SAP.\n\nBusiness Partner: ${bpNumber || "-"}\nSupplier: ${supplierNumber || "-"}`,
+                    { onClose: () => this.onNavBack() }
+                );
+            } else {
+                MessageToast.show(`Onboarding ${target.text.toLowerCase()}.`);
+                this.onNavBack();
+            }
         } catch (oError: any) {
             let message = "Could not save the action. Please try again.";
             try {
@@ -186,12 +199,14 @@ export default class detail extends Controller {
             } catch (e) {
                 message = oError?.message || message;
             }
-            if (sapStepFailed) {
+            if (sapCreationUpdateFailed) {
+                message = `Business Partner ${bpNumber} and Supplier ${supplierNumber || bpNumber} were created in SAP, but the SAP Creation record could not be updated. Please try approving again so the existing supplier is reused and the onboarding record is patched.\n\n${message}`;
+            } else if (sapStepFailed) {
                 message = `The supplier could not be created in SAP. Nothing was approved - please fix the issue and try again.\n\n${message}`;
             } else if (approvalSaved) {
                 message = `Your action was logged, but the onboarding status could not be updated.\n\n${message}`;
             } else if (bpNumber) {
-                message = `Supplier ${bpNumber} was created in SAP, but the approval could not be saved. Click Approve again to retry (the existing supplier will be reused).\n\n${message}`;
+                message = `Business Partner ${bpNumber} and Supplier ${supplierNumber || bpNumber} were created in SAP, but the approval could not be saved. Click Approve again to retry (the existing supplier will be reused).\n\n${message}`;
             }
             MessageBox.error(message);
         } finally {
@@ -297,6 +312,45 @@ export default class detail extends Controller {
     private _update(model: ODataModel, path: string, data: object): Promise<void> {
         return new Promise((resolve, reject) => {
             model.update(path, data, { success: () => resolve(), error: reject });
+        });
+    }
+
+    private async _updateSAPCreation(model: ODataModel, supplierId: string, bpNumber: string, supplierNumber: string): Promise<void> {
+        const child = this.getView()!.getModel("child") as JSONModel;
+        let sapCreation = child.getProperty("/sapCreation") as Record<string, any>;
+        if (!sapCreation?.SAP_UUID) {
+            sapCreation = await this._readSAPCreation(model, supplierId);
+            child.setProperty("/sapCreation", sapCreation);
+        }
+        if (!sapCreation?.SAP_UUID) {
+            throw new Error(`SAP Creation record was not found for supplier ${supplierId}.`);
+        }
+
+        const path = "/" + model.createKey("YY1_SAPCREATION_SUPPLIER_ONBOA", { SAP_UUID: sapCreation.SAP_UUID });
+        await new Promise<void>((resolve, reject) => {
+            model.update(path, {
+                BPNumber: bpNumber,
+                SupplierNumber: supplierNumber
+            }, {
+                method: "PATCH",
+                success: () => resolve(),
+                error: reject
+            } as any);
+        });
+        child.setProperty("/sapCreation/BPNumber", bpNumber);
+        child.setProperty("/sapCreation/SupplierNumber", supplierNumber);
+    }
+
+    private _readSAPCreation(model: ODataModel, supplierId: string): Promise<Record<string, any>> {
+        return new Promise((resolve, reject) => {
+            model.read("/YY1_SAPCREATION_SUPPLIER_ONBOA", {
+                filters: [
+                    new Filter("SAP_PARENT_UUID", FilterOperator.EQ, this._id),
+                    new Filter("SupplierID", FilterOperator.EQ, supplierId)
+                ],
+                success: (data: any) => resolve(data.results?.[0] ?? {}),
+                error: reject
+            });
         });
     }
 }

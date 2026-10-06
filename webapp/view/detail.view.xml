@@ -81,6 +81,17 @@
                     </l:Grid>
                 </VBox>
 
+                <VBox id="sapCreationCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop"
+                    visible="{= !!${child>/sapCreation/BPNumber} || !!${child>/sapCreation/SupplierNumber} || ${Status} === '11' }">
+                    <Title id="sapCreationTitle" text="{i18n>tabSapCreation}" class="sapUiSmallMarginBottom" />
+                    <l:Grid id="sapCreationGrid" defaultSpan="XL3 L4 M6 S12">
+                            <VBox id="sapCreationSupplierIdBox"><Label id="sapCreationSupplierIdLbl" text="{i18n>supplierId}" /><Text id="sapCreationSupplierIdVal" text="{child>/sapCreation/SupplierID}" /></VBox>
+                            <VBox id="sapCreationBpBox"><Label id="sapCreationBpLbl" text="{i18n>bpNumber}" /><Text id="sapCreationBpVal" text="{child>/sapCreation/BPNumber}" /></VBox>
+                            <VBox id="sapCreationSupplierBox"><Label id="sapCreationSupplierLbl" text="{i18n>supplierNumber}" /><Text id="sapCreationSupplierVal" text="{child>/sapCreation/SupplierNumber}" /></VBox>
+                            <VBox id="sapCreationErrorBox"><Label id="sapCreationErrorLbl" text="{i18n>errorMessage}" /><Text id="sapCreationErrorVal" text="{child>/sapCreation/ErrorMessage}" /></VBox>
+                    </l:Grid>
+                </VBox>
+
             </VBox>
         </content>
         <footer>

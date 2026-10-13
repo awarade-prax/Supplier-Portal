@@ -13,6 +13,24 @@ const STATUS_TEXT: Record<string, string> = {
     "11": "Overall Approved"
 };
 
+function formatODataDate(value: Date | string | null | undefined): string {
+    if (!value) {
+        return "-";
+    }
+
+    let date: Date;
+    if (value instanceof Date) {
+        date = value;
+    } else {
+        const match = /^\/Date\((-?\d+)(?:[+-]\d{4})?\)\/$/.exec(value);
+        date = match ? new Date(Number(match[1])) : new Date(value);
+    }
+
+    return Number.isNaN(date.getTime())
+        ? String(value)
+        : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(date);
+}
+
 export default {
     statusText(code: string | undefined, text: string | undefined): string {
         return text || STATUS_TEXT[code ?? ""] || STATUS_TEXT["1"];
@@ -25,20 +43,12 @@ export default {
         return String(value || "").replace(/^0+/, "");
     },
     odataDate(value: Date | string | null | undefined): string {
-        if (!value) {
-            return "-";
-        }
-
-        let date: Date;
-        if (value instanceof Date) {
-            date = value;
-        } else {
-            const match = /^\/Date\((-?\d+)(?:[+-]\d{4})?\)\/$/.exec(value);
-            date = match ? new Date(Number(match[1])) : new Date(value);
-        }
-
-        return Number.isNaN(date.getTime())
-            ? String(value)
-            : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(date);
+        return formatODataDate(value);
+    },
+    labelValue(label: string | undefined, value: string | null | undefined): string {
+        return `${label || ""}: ${value || "-"}`;
+    },
+    labelDate(label: string | undefined, value: Date | string | null | undefined): string {
+        return `${label || ""}: ${formatODataDate(value)}`;
     }
 };

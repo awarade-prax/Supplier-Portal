@@ -28,10 +28,9 @@
                         <ObjectAttribute id="rfqObjectCreatedBy" title="{i18n>createdBy}" text="{rfqDetail>/header/CreatedBy}" />
                         <ObjectAttribute id="rfqObjectCreatedOn" title="{i18n>createdOn}" text="{path: 'rfqDetail>/header/CreationDate', formatter: '.formatter.odataDate'}" />
                         <ObjectAttribute id="rfqObjectPublishingDate" title="{i18n>publishingDate}" text="{path: 'rfqDetail>/header/PublishingDate', formatter: '.formatter.odataDate'}" />
-                        <ObjectAttribute id="rfqObjectApprover" title="{i18n>approver}" text="{i18n>notStarted}" />
                     </attributes>
                     <statuses>
-                        <ObjectStatus id="rfqObjectStatus" title="{i18n>status}" text="{i18n>rfqStatusInPreparation}" />
+                    
                         <ObjectStatus id="rfqObjectDeadline" title="{i18n>quotationDeadline}" text="{path: 'rfqDetail>/header/QuotationDeadline', formatter: '.formatter.odataDate'}" />
                     </statuses>
                 </ObjectHeader>

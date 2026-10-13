@@ -20,18 +20,6 @@
                     id="rfqObjectHeader"
                     class="supplierCard supplierCardPadded rfqHeaderCard"
                 >
-<<<<<<< HEAD
-                    <attributes>
-                        <ObjectAttribute id="rfqObjectCreatedBy" title="{i18n>createdBy}" text="{rfqDetail>/header/CreatedBy}" />
-                        <ObjectAttribute id="rfqObjectCreatedOn" title="{i18n>createdOn}" text="{path: 'rfqDetail>/header/CreationDate', formatter: '.formatter.odataDate'}" />
-                        <ObjectAttribute id="rfqObjectPublishingDate" title="{i18n>publishingDate}" text="{path: 'rfqDetail>/header/PublishingDate', formatter: '.formatter.odataDate'}" />
-                    </attributes>
-                    <statuses>
-                    
-                        <ObjectStatus id="rfqObjectDeadline" title="{i18n>quotationDeadline}" text="{path: 'rfqDetail>/header/QuotationDeadline', formatter: '.formatter.odataDate'}" />
-                    </statuses>
-                </ObjectHeader>
-=======
                     <HBox id="rfqHeaderTopRow" justifyContent="SpaceBetween" alignItems="Start" wrap="Wrap">
                         <VBox id="rfqHeaderTitleBlock">
                             <Title id="rfqHeaderTitle" text="{i18n>rfqPurchaseItemTitle}" level="H2" />
@@ -63,7 +51,6 @@
                         </VBox>
                     </HBox>
                 </VBox>
->>>>>>> e94b0e72fb9aae8351e67ca3669073c75c1c10e7
 
                 <VBox id="rfqGeneralCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
                     <Title id="rfqGeneralTitle" text="{i18n>rfqSectionGeneral}" class="sapUiSmallMarginBottom" />

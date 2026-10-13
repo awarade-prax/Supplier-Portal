@@ -23,5 +23,22 @@ export default {
     },
     pin(value: string | undefined): string {
         return String(value || "").replace(/^0+/, "");
+    },
+    odataDate(value: Date | string | null | undefined): string {
+        if (!value) {
+            return "-";
+        }
+
+        let date: Date;
+        if (value instanceof Date) {
+            date = value;
+        } else {
+            const match = /^\/Date\((-?\d+)(?:[+-]\d{4})?\)\/$/.exec(value);
+            date = match ? new Date(Number(match[1])) : new Date(value);
+        }
+
+        return Number.isNaN(date.getTime())
+            ? String(value)
+            : new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeZone: "UTC" }).format(date);
     }
 };

@@ -1,0 +1,131 @@
+<mvc:View
+    controllerName="supplierportal.controller.rfq"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.f"
+    xmlns:table="sap.ui.table"
+    xmlns:rowmodes="sap.ui.table.rowmodes"
+    xmlns:sfb="sap.ui.comp.smartfilterbar"
+    xmlns:st="sap.ui.comp.smarttable"
+>
+    <Page id="rfqListPage" showHeader="false" enableScrolling="false">
+        <f:DynamicPage
+            id="rfqDynamicPage"
+            headerExpanded="true"
+            fitContent="true"
+            toggleHeaderOnTitleClick="false"
+        >
+            <f:title>
+                <f:DynamicPageTitle id="rfqDynamicPageTitle">
+                    <f:heading>
+                        <Title id="rfqListTitle" text="{i18n>rfqListTitle}" />
+                    </f:heading>
+                </f:DynamicPageTitle>
+            </f:title>
+            <f:header>
+                <f:DynamicPageHeader id="rfqDynamicPageHeader" pinnable="true">
+                    <sfb:SmartFilterBar
+                        id="rfqSmartFilterBar"
+                        entitySet="RFQ_Header"
+                        persistencyKey="supplierportal.rfq.filterbar"
+                        enableBasicSearch="false"
+                        useToolbar="false"
+                    >
+                        <sfb:controlConfiguration>
+                            <sfb:ControlConfiguration id="rfqFilterNumber" key="RequestForQuotation" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="rfqFilterType" key="RFQType" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="rfqFilterDescription" key="RFQDescription" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="rfqFilterPurchasingOrg" key="PurchasingOrganization" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="rfqFilterPurchasingGroup" key="PurchasingGroup" visibleInAdvancedArea="true" />
+                            <sfb:ControlConfiguration id="rfqFilterDeadline" key="QuotationDeadline" visibleInAdvancedArea="true" />
+                        </sfb:controlConfiguration>
+                    </sfb:SmartFilterBar>
+                </f:DynamicPageHeader>
+            </f:header>
+            <f:content>
+                <st:SmartTable
+                    id="rfqSmartTable"
+                    entitySet="RFQ_Header"
+                    smartFilterId="rfqSmartFilterBar"
+                    tableType="Table"
+                    header="{i18n>rfqListTitle}"
+                    showRowCount="true"
+                    enableAutoBinding="true"
+                    useVariantManagement="false"
+                    useTablePersonalisation="true"
+                    enableExport="true"
+                    requestAtLeastFields="RequestForQuotation,RFQType,RFQDescription,Language,PurchasingOrganization,PurchasingGroup,CompanyCode,DocumentCurrency,PublishingDate,QuotationDeadline,FollowOnDocumentType,CreatedBy,CreationDate,TargetValue"
+                >
+                    <table:Table id="rfqTable" selectionMode="None" rowActionCount="1">
+                        <table:rowMode>
+                            <rowmodes:Auto id="rfqRowMode" />
+                        </table:rowMode>
+                        <table:columns>
+                            <table:Column id="rfqColNumber" width="11rem" sortProperty="RequestForQuotation" filterProperty="RequestForQuotation">
+                                <Label id="rfqHdrNumber" text="{i18n>rfqNumber}" />
+                                <table:template><Text id="rfqCellNumber" text="{RequestForQuotation}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"RequestForQuotation","leadingProperty":"RequestForQuotation","columnIndex":0\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColType" width="7rem" sortProperty="RFQType" filterProperty="RFQType">
+                                <Label id="rfqHdrType" text="{i18n>rfqType}" />
+                                <table:template><Text id="rfqCellType" text="{RFQType}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"RFQType","leadingProperty":"RFQType","columnIndex":1\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColDescription" width="17rem" sortProperty="RFQDescription" filterProperty="RFQDescription">
+                                <Label id="rfqHdrDescription" text="{i18n>rfqDescription}" />
+                                <table:template><Text id="rfqCellDescription" text="{RFQDescription}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"RFQDescription","leadingProperty":"RFQDescription","columnIndex":2\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColPurchasingOrg" width="12rem" sortProperty="PurchasingOrganization" filterProperty="PurchasingOrganization">
+                                <Label id="rfqHdrPurchasingOrg" text="{i18n>purchasingOrganization}" />
+                                <table:template><Text id="rfqCellPurchasingOrg" text="{PurchasingOrganization}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"PurchasingOrganization","leadingProperty":"PurchasingOrganization","columnIndex":3\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColPurchasingGroup" width="10rem" sortProperty="PurchasingGroup" filterProperty="PurchasingGroup">
+                                <Label id="rfqHdrPurchasingGroup" text="{i18n>purchasingGroup}" />
+                                <table:template><Text id="rfqCellPurchasingGroup" text="{PurchasingGroup}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"PurchasingGroup","leadingProperty":"PurchasingGroup","columnIndex":4\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColCompanyCode" width="9rem" sortProperty="CompanyCode" filterProperty="CompanyCode">
+                                <Label id="rfqHdrCompanyCode" text="{i18n>companyCode}" />
+                                <table:template><Text id="rfqCellCompanyCode" text="{CompanyCode}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"CompanyCode","leadingProperty":"CompanyCode","columnIndex":5\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColCurrency" width="8rem" sortProperty="DocumentCurrency" filterProperty="DocumentCurrency">
+                                <Label id="rfqHdrCurrency" text="{i18n>documentCurrency}" />
+                                <table:template><Text id="rfqCellCurrency" text="{DocumentCurrency}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"DocumentCurrency","leadingProperty":"DocumentCurrency","columnIndex":6\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColTargetValue" width="10rem" sortProperty="TargetValue" filterProperty="TargetValue">
+                                <Label id="rfqHdrTargetValue" text="{i18n>targetValue}" />
+                                <table:template><Text id="rfqCellTargetValue" text="{TargetValue}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"TargetValue","leadingProperty":"TargetValue","columnIndex":7\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColDeadline" width="12rem" sortProperty="QuotationDeadline" filterProperty="QuotationDeadline">
+                                <Label id="rfqHdrDeadline" text="{i18n>quotationDeadline}" />
+                                <table:template><Text id="rfqCellDeadline" text="{path: 'QuotationDeadline', formatter: '.formatter.odataDate'}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"QuotationDeadline","leadingProperty":"QuotationDeadline","columnIndex":8\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColCreatedBy" width="12rem" sortProperty="CreatedBy" filterProperty="CreatedBy">
+                                <Label id="rfqHdrCreatedBy" text="{i18n>createdBy}" />
+                                <table:template><Text id="rfqCellCreatedBy" text="{CreatedBy}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"CreatedBy","leadingProperty":"CreatedBy","columnIndex":9\}' /></table:customData>
+                            </table:Column>
+                            <table:Column id="rfqColCreatedOn" width="12rem" sortProperty="CreationDate" filterProperty="CreationDate">
+                                <Label id="rfqHdrCreatedOn" text="{i18n>createdOn}" />
+                                <table:template><Text id="rfqCellCreatedOn" text="{path: 'CreationDate', formatter: '.formatter.odataDate'}" wrapping="false" /></table:template>
+                                <table:customData><core:CustomData key="p13nData" value='\{"columnKey":"CreationDate","leadingProperty":"CreationDate","columnIndex":10\}' /></table:customData>
+                            </table:Column>
+                        </table:columns>
+                        <table:rowActionTemplate>
+                            <table:RowAction id="rfqRowAction">
+                                <table:RowActionItem id="rfqViewDetails" type="Navigation" text="{i18n>rfqViewDetails}" press=".onRowPress" />
+                            </table:RowAction>
+                        </table:rowActionTemplate>
+                    </table:Table>
+                </st:SmartTable>
+            </f:content>
+        </f:DynamicPage>
+    </Page>
+</mvc:View>

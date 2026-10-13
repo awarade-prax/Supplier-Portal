@@ -16,25 +16,41 @@
     >
         <content>
             <VBox id="rfqDetailContent" class="supplierContent">
-                <ObjectHeader
+                <VBox
                     id="rfqObjectHeader"
-                    class="supplierCard"
-                    title="{i18n>rfqPurchaseItemTitle}"
-                    intro="{rfqDetail>/header/RequestForQuotation}"
-                    number="{rfqDetail>/header/TargetValue}"
-                    numberUnit="{rfqDetail>/header/DocumentCurrency}"
+                    class="supplierCard supplierCardPadded rfqHeaderCard"
                 >
-                    <attributes>
-                        <ObjectAttribute id="rfqObjectCreatedBy" title="{i18n>createdBy}" text="{rfqDetail>/header/CreatedBy}" />
-                        <ObjectAttribute id="rfqObjectCreatedOn" title="{i18n>createdOn}" text="{path: 'rfqDetail>/header/CreationDate', formatter: '.formatter.odataDate'}" />
-                        <ObjectAttribute id="rfqObjectPublishingDate" title="{i18n>publishingDate}" text="{path: 'rfqDetail>/header/PublishingDate', formatter: '.formatter.odataDate'}" />
-                        <ObjectAttribute id="rfqObjectApprover" title="{i18n>approver}" text="{i18n>notStarted}" />
-                    </attributes>
-                    <statuses>
-                        <ObjectStatus id="rfqObjectStatus" title="{i18n>status}" text="{i18n>rfqStatusInPreparation}" />
-                        <ObjectStatus id="rfqObjectDeadline" title="{i18n>quotationDeadline}" text="{path: 'rfqDetail>/header/QuotationDeadline', formatter: '.formatter.odataDate'}" />
-                    </statuses>
-                </ObjectHeader>
+                    <HBox id="rfqHeaderTopRow" justifyContent="SpaceBetween" alignItems="Start" wrap="Wrap">
+                        <VBox id="rfqHeaderTitleBlock">
+                            <Title id="rfqHeaderTitle" text="{i18n>rfqPurchaseItemTitle}" level="H2" />
+                            <Text id="rfqHeaderNumber" text="{rfqDetail>/header/RequestForQuotation}" class="rfqHeaderNumber" />
+                        </VBox>
+                        <Button id="rfqSendEmailsButton" text="{i18n>sendEmails}" type="Emphasized" press=".onSendEmails" />
+                    </HBox>
+                    <HBox id="rfqHeaderDetailsRow" class="rfqHeaderDetailsRow" wrap="Wrap">
+                        <VBox id="rfqHeaderMetadata" class="rfqHeaderMetadata">
+                            <Text id="rfqHeaderCreatedBy" text="{parts: [{path: 'i18n>createdBy'}, {path: 'rfqDetail>/header/CreatedBy'}], formatter: '.formatter.labelValue'}" />
+                            <Text id="rfqHeaderCreatedOn" text="{parts: [{path: 'i18n>createdOn'}, {path: 'rfqDetail>/header/CreationDate'}], formatter: '.formatter.labelDate'}" />
+                            <Text id="rfqHeaderPublishingDate" text="{parts: [{path: 'i18n>publishingDate'}, {path: 'rfqDetail>/header/PublishingDate'}], formatter: '.formatter.labelDate'}" />
+                            <Text id="rfqHeaderApprover" text="{parts: [{path: 'i18n>approver'}, {path: 'i18n>notStarted'}], formatter: '.formatter.labelValue'}" />
+                        </VBox>
+                        <VBox id="rfqHeaderStatus" class="rfqHeaderMetric">
+                            <Label id="rfqHeaderStatusLabel" text="{i18n>status}" />
+                            <ObjectStatus id="rfqHeaderStatusValue" text="{i18n>rfqStatusInPreparation}" />
+                        </VBox>
+                        <VBox id="rfqHeaderTargetValue" class="rfqHeaderMetric">
+                            <Label id="rfqHeaderTargetValueLabel" text="{i18n>targetValue}" />
+                            <HBox id="rfqHeaderTargetValueAmount" alignItems="Baseline">
+                                <Text id="rfqHeaderTargetValueValue" text="{rfqDetail>/header/TargetValue}" class="rfqHeaderMetricValue" />
+                                <Text id="rfqHeaderTargetValueCurrency" text="{rfqDetail>/header/DocumentCurrency}" class="rfqHeaderCurrency" />
+                            </HBox>
+                        </VBox>
+                        <VBox id="rfqHeaderDeadline" class="rfqHeaderMetric">
+                            <Label id="rfqHeaderDeadlineLabel" text="{i18n>quotationDeadline}" />
+                            <Text id="rfqHeaderDeadlineValue" text="{path: 'rfqDetail>/header/QuotationDeadline', formatter: '.formatter.odataDate'}" class="rfqHeaderMetricValue" />
+                        </VBox>
+                    </HBox>
+                </VBox>
 
                 <VBox id="rfqGeneralCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
                     <Title id="rfqGeneralTitle" text="{i18n>rfqSectionGeneral}" class="sapUiSmallMarginBottom" />
@@ -43,14 +59,12 @@
                         <VBox id="rfqDescriptionBox"><Label id="rfqDescriptionLabel" text="{i18n>rfqDescription}" /><Text id="rfqDescriptionValue" text="{rfqDetail>/header/RFQDescription}" /></VBox>
                         <VBox id="rfqLanguageBox"><Label id="rfqLanguageLabel" text="{i18n>rfqLanguage}" /><Text id="rfqLanguageValue" text="{rfqDetail>/header/Language}" /></VBox>
                         <VBox id="rfqCurrencyBox"><Label id="rfqCurrencyLabel" text="{i18n>documentCurrency}" /><Text id="rfqCurrencyValue" text="{rfqDetail>/header/DocumentCurrency}" /></VBox>
-                        <VBox id="rfqTargetValueBox"><Label id="rfqTargetValueLabel" text="{i18n>targetValue}" /><Text id="rfqTargetValueValue" text="{rfqDetail>/header/TargetValue}" /></VBox>
                         <VBox id="rfqFollowOnBox"><Label id="rfqFollowOnLabel" text="{i18n>followOnDocType}" /><Text id="rfqFollowOnValue" text="{rfqDetail>/header/FollowOnDocumentType}" /></VBox>
                         <VBox id="rfqPurchasingOrgBox"><Label id="rfqPurchasingOrgLabel" text="{i18n>purchasingOrganization}" /><Text id="rfqPurchasingOrgValue" text="{rfqDetail>/header/PurchasingOrganization}" /></VBox>
                         <VBox id="rfqPurchasingGroupBox"><Label id="rfqPurchasingGroupLabel" text="{i18n>purchasingGroup}" /><Text id="rfqPurchasingGroupValue" text="{rfqDetail>/header/PurchasingGroup}" /></VBox>
                         <VBox id="rfqCompanyCodeBox"><Label id="rfqCompanyCodeLabel" text="{i18n>companyCode}" /><Text id="rfqCompanyCodeValue" text="{rfqDetail>/header/CompanyCode}" /></VBox>
                         <VBox id="rfqCreatedByBox"><Label id="rfqCreatedByLabel" text="{i18n>createdBy}" /><Text id="rfqCreatedByValue" text="{rfqDetail>/header/CreatedBy}" /></VBox>
                         <VBox id="rfqPublishingDateBox"><Label id="rfqPublishingDateLabel" text="{i18n>publishingDate}" /><Text id="rfqPublishingDateValue" text="{path: 'rfqDetail>/header/PublishingDate', formatter: '.formatter.odataDate'}" /></VBox>
-                        <VBox id="rfqDeadlineBox"><Label id="rfqDeadlineLabel" text="{i18n>quotationDeadline}" /><Text id="rfqDeadlineValue" text="{path: 'rfqDetail>/header/QuotationDeadline', formatter: '.formatter.odataDate'}" /></VBox>
                         <VBox id="rfqCreationDateBox"><Label id="rfqCreationDateLabel" text="{i18n>createdOn}" /><Text id="rfqCreationDateValue" text="{path: 'rfqDetail>/header/CreationDate', formatter: '.formatter.odataDate'}" /></VBox>
                     </l:Grid>
                 </VBox>

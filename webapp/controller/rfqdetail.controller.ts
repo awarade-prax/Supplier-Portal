@@ -3,6 +3,7 @@ import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import ODataModel from "sap/ui/model/odata/v2/ODataModel";
 import MessageBox from "sap/m/MessageBox";
+import MessageToast from "sap/m/MessageToast";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
 import ResourceModel from "sap/ui/model/resource/ResourceModel";
@@ -86,5 +87,9 @@ export default class rfqdetail extends Controller {
 
     public onNavBack(): void {
         UIComponent.getRouterFor(this).navTo("rfqList");
+    }
+
+    public onSendEmails(): void {
+        MessageToast.show(this._getText("sendEmailsTriggered"));
     }
 }

@@ -59,6 +59,12 @@
                         icon="sap-icon://money-bills"
                         key="financeList"
                     />
+                    <tnt:NavigationListItem
+                        id="navRfq"
+                        text="{i18n>navRfq}"
+                        icon="sap-icon://sales-quote"
+                        key="rfqList"
+                    />
                 </tnt:NavigationList>
             </tnt:SideNavigation>
         </tnt:sideContent>

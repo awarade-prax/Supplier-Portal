@@ -29,6 +29,13 @@
         "settings": {
           "odataVersion": "2.0"
         }
+      },
+      "rfqService": {
+        "uri": "/sap/opu/odata/sap/Z_RFQ_SUPP_PORTAL_SB/",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0"
+        }
       }
     },
     "crossNavigation": {
@@ -52,7 +59,7 @@
     "flexEnabled": true,
     "dependencies": {
       "minUI5Version": "1.148.6",
-      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.ui.layout": {}, "sap.tnt": {}, "sap.ui.comp": {}, "sap.f": {}, "sap.ui.table": {} }
+      "libs": { "sap.m": {}, "sap.ui.core": {}, "sap.ui.layout": {}, "sap.tnt": {}, "sap.ui.comp": {}, "sap.f": {}, "sap.ui.table": {}, "sap.uxap": {} }
     },
     "contentDensities": { "compact": true, "cozy": true },
     "models": {
@@ -65,6 +72,11 @@
         "dataSource": "bpService",
         "preload": false,
         "settings": { "defaultBindingMode": "OneWay", "useBatch": false }
+      },
+      "rfq": {
+        "dataSource": "rfqService",
+        "preload": false,
+        "settings": { "defaultBindingMode": "OneWay" }
       }
     },
     "resources": { "css": [{ "uri": "css/style.css" }] },
@@ -86,7 +98,9 @@
         { "name": "financeList", "pattern": "finance:?query:", "target": ["financeList"] },
         { "name": "create", "pattern": "create", "target": ["create"] },
         { "name": "detail", "pattern": "detail/{id}", "target": ["detail"] },
-        { "name": "allDetail", "pattern": "all/detail/{id}", "target": ["detail"] }
+        { "name": "allDetail", "pattern": "all/detail/{id}", "target": ["detail"] },
+        { "name": "rfqList", "pattern": "rfq:?query:", "target": ["rfqList"] },
+        { "name": "rfqDetail", "pattern": "rfq/{id}", "target": ["rfqDetail"] }
       ],
       "targets": {
         "home": { "id": "home", "name": "home" },
@@ -94,7 +108,9 @@
         "list": { "id": "list", "name": "list" },
         "financeList": { "id": "financeList", "name": "list" },
         "create": { "id": "onboardingform", "name": "onboardingform" },
-        "detail": { "id": "detail", "name": "detail" }
+        "detail": { "id": "detail", "name": "detail" },
+        "rfqList": { "id": "rfqList", "name": "rfq" },
+        "rfqDetail": { "id": "rfqDetail", "name": "rfqdetail" }
       }
     },
     "rootView": { "viewName": "supplierportal.view.App", "type": "XML", "id": "App", "async": true }

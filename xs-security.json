@@ -2,5 +2,7 @@
   "description": "Security profile of called application",
   "scopes": [],
   "attributes": [],
-  "role-templates": []
+  "role-templates": [],
+  "xsappname": "supplierportal-auth",
+  "tenant-mode": "dedicated"
 }

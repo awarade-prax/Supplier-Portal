@@ -10,6 +10,13 @@
       "csrfProtection": false
     },
     {
+      "source": "^/mail-api/(.*)$",
+      "target": "/mail-api/$1",
+      "destination": "supplierportal_mail_srv",
+      "authenticationType": "xsuaa",
+      "csrfProtection": false
+    },
+    {
       "source": "^/resources/(.*)$",
       "target": "/resources/$1",
       "authenticationType": "none",

@@ -23,6 +23,12 @@ const CHILD_NAVIGATIONS: Record<string, string> = {
     to_TaxRegistration: "YY1_TAXREGISTRATION_SUPPLIER_O"
 };
 
+// Field on YY1_SUPPLIER_ONBOARDING that holds the supplier's invitation token.
+// The token is generated here, saved with the record, and put in the mail link:
+//   <supplier portal>/?token=<AccessToken>
+// The field must be writable (not calculated / read-only) in the custom business object.
+const ACCESS_TOKEN_FIELD = "AccessToken";
+
 /**
  * @namespace supplierportal.controller
  */
@@ -52,11 +58,15 @@ export default class onboardingform extends Controller {
         const oOnboardingModel = oView.getModel("onboarding") as JSONModel;
         const oData = oOnboardingModel.getData();
 
+        // random token, stored in the CBO together with the record and reused in the email link
+        const sAccessToken = this._generateToken();
+
         const oPayload = {
             SupplierName: oData.SupplierName,
             SupplierEmail: oData.SupplierEmail,
             PurchasingOrganization: oData.PurchasingOrganization,
-            SupplierCategory: oData.SupplierCategory
+            SupplierCategory: oData.SupplierCategory,
+            [ACCESS_TOKEN_FIELD]: sAccessToken
         };
 
         const oODataModel = oView.getModel() as ODataModel;
@@ -64,9 +74,11 @@ export default class onboardingform extends Controller {
         oSubmitButton?.setEnabled(false);
 
         oODataModel.create("/YY1_SUPPLIER_ONBOARDING", oPayload, {
-            success: (oCreated: { ID?: string; SAP_UUID?: string }) => {
+            success: (oCreated: { ID?: string; SAP_UUID?: string; [key: string]: string | undefined }) => {
                 const sSupplierId = oCreated?.ID ?? "";
-                this._sendConfirmationEmail(oPayload);
+
+                // mail goes out only after the record (with its token) has been saved
+                this._sendConfirmationEmail(oPayload, sAccessToken);
 
                 // post the generated ID into every related entity set
                 this._createChildren(sSupplierId, oCreated?.SAP_UUID ?? "").then((aFailed) => {
@@ -97,9 +109,16 @@ export default class onboardingform extends Controller {
     }
 
     public onCancel(): void {
-    this._resetForm();
-    UIComponent.getRouterFor(this).navTo("list");
-}
+        this._resetForm();
+        UIComponent.getRouterFor(this).navTo("list");
+    }
+
+    /** Random, unguessable invitation token (256 bits from the browser's CSPRNG, hex encoded). */
+    private _generateToken(): string {
+        const bytes = new Uint8Array(32);
+        crypto.getRandomValues(bytes);
+        return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+    }
 
     /** Creates one row per child node via the parent's navigation properties, with SupplierID = generated onboarding ID.
      *  Resolves with the names of the entity sets that failed. */
@@ -125,7 +144,7 @@ export default class onboardingform extends Controller {
         SupplierEmail: string;
         PurchasingOrganization: string;
         SupplierCategory: string;
-    }): void {
+    }, sAccessToken: string): void {
         fetch("/mail-api/send-confirmation", {
             method: "POST",
             headers: {
@@ -136,20 +155,21 @@ export default class onboardingform extends Controller {
                 supplierName: oPayload.SupplierName,
                 supplierEmail: oPayload.SupplierEmail,
                 purchasingOrganization: oPayload.PurchasingOrganization,
-                supplierCategory: oPayload.SupplierCategory
+                supplierCategory: oPayload.SupplierCategory,
+                accessToken: sAccessToken
             })
         })
             .then((oResponse) => {
                 if (!oResponse.ok) {
                     throw new Error(`Mail service responded with status ${oResponse.status}`);
                 }
-                MessageToast.show(`Confirmation email sent to ${oPayload.SupplierEmail}.`);
+                MessageToast.show(`Invitation email sent to ${oPayload.SupplierEmail}.`);
             })
             .catch((oError: unknown) => {
                 // The onboarding record was already created successfully, so a mail
                 // failure should only be surfaced as a soft warning, not block the flow.
-                console.error("Failed to send confirmation email:", oError);
-                MessageToast.show("Request submitted, but the confirmation email could not be sent.");
+                console.error("Failed to send invitation email:", oError);
+                MessageToast.show("Request submitted, but the invitation email could not be sent.");
             });
     }
 

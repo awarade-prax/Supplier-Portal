@@ -27,6 +27,10 @@ export default class App extends Controller {
                 nav.setSelectedKey("allList");
                 return;
             }
+            if (name === "rfqDetail") {
+                nav.setSelectedKey("rfqList");
+                return;
+            }
             if (name === "detail") {
                 // keep the tab the user came from; default to Purchase on a direct link
                 if (!nav.getSelectedKey()) { nav.setSelectedKey("list"); }

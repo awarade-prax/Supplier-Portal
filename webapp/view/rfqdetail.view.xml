@@ -2,7 +2,11 @@
     controllerName="supplierportal.controller.rfqdetail"
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
+    xmlns:core="sap.ui.core"
     xmlns:l="sap.ui.layout"
+    xmlns:table="sap.ui.table"
+    xmlns:rowmodes="sap.ui.table.rowmodes"
+    xmlns:st="sap.ui.comp.smarttable"
 >
     <Page
         id="rfqDetailPage"
@@ -59,86 +63,52 @@
                 </VBox>
 
                 <VBox id="rfqItemsCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
-                    <Title id="rfqItemsTitle" text="{i18n>rfqSectionItems}" class="sapUiSmallMarginBottom" />
-                    <Table
-                        id="rfqItemsTable"
-                        items="{rfqDetail>/items}"
-                        noDataText="{i18n>rfqNoItems}"
-                        growing="true"
-                        growingScrollToLoad="true"
-                        fixedLayout="false"
-                    >
-                        <columns>
-                            <Column id="rfqItemNumberColumn"><Text id="rfqItemNumberHeader" text="{i18n>rfqItem}" /></Column>
-                            <Column id="rfqItemScheduleColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="rfqItemScheduleHeader" text="{i18n>rfqScheduleLine}" /></Column>
-                            <Column id="rfqItemDescriptionColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="rfqItemDescriptionHeader" text="{i18n>rfqShortText}" /></Column>
-                            <Column id="rfqItemMaterialColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="rfqItemMaterialHeader" text="{i18n>rfqMaterial}" /></Column>
-                            <Column id="rfqItemMaterialGroupColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemMaterialGroupHeader" text="{i18n>rfqMaterialGroup}" /></Column>
-                            <Column id="rfqItemPlantColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemPlantHeader" text="{i18n>rfqPlant}" /></Column>
-                            <Column id="rfqItemQuantityColumn" hAlign="End"><Text id="rfqItemQuantityHeader" text="{i18n>rfqRequestedQuantity}" /></Column>
-                            <Column id="rfqItemUnitColumn"><Text id="rfqItemUnitHeader" text="{i18n>rfqOrderUnit}" /></Column>
-                            <Column id="rfqItemBaseUnitColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemBaseUnitHeader" text="{i18n>rfqBaseUnit}" /></Column>
-                            <Column id="rfqItemDeliveryColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="rfqItemDeliveryHeader" text="{i18n>rfqDeliveryDate}" /></Column>
-                            <Column id="rfqItemRequisitionColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemRequisitionHeader" text="{i18n>rfqPurchaseRequisition}" /></Column>
-                            <Column id="rfqItemRequisitionItemColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemRequisitionItemHeader" text="{i18n>rfqPurchaseRequisitionItem}" /></Column>
-                            <Column id="rfqItemIncotermsColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemIncotermsHeader" text="{i18n>rfqIncoterms}" /></Column>
-                            <Column id="rfqItemIncotermsLocation1Column" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemIncotermsLocation1Header" text="{i18n>rfqIncotermsLocation1}" /></Column>
-                            <Column id="rfqItemIncotermsLocation2Column" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemIncotermsLocation2Header" text="{i18n>rfqIncotermsLocation2}" /></Column>
-                            <Column id="rfqItemManufacturerColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemManufacturerHeader" text="{i18n>rfqManufacturer}" /></Column>
-                            <Column id="rfqItemManufacturerPartNoColumn" minScreenWidth="Desktop" demandPopin="true"><Text id="rfqItemManufacturerPartNoHeader" text="{i18n>rfqManufacturerPartNo}" /></Column>
-                        </columns>
-                        <items>
-                            <ColumnListItem id="rfqItemRow" vAlign="Middle">
-                                <cells>
-                                    <Text id="rfqItemNumber" text="{rfqDetail>RequestForQuotationItem}" />
-                                    <Text id="rfqItemSchedule" text="{rfqDetail>ScheduleLine}" />
-                                    <Text id="rfqItemDescription" text="{rfqDetail>ShortText}" />
-                                    <Text id="rfqItemMaterial" text="{rfqDetail>Material}" />
-                                    <Text id="rfqItemMaterialGroup" text="{rfqDetail>MaterialGroup}" />
-                                    <Text id="rfqItemPlant" text="{rfqDetail>Plant}" />
-                                    <Text id="rfqItemQuantity" text="{rfqDetail>RequestedQuantity}" />
-                                    <Text id="rfqItemUnit" text="{rfqDetail>OrderQuantityUnit}" />
-                                    <Text id="rfqItemBaseUnit" text="{rfqDetail>BaseUnit}" />
-                                    <Text id="rfqItemDelivery" text="{path: 'rfqDetail>DeliveryDate', formatter: '.formatter.odataDate'}" />
-                                    <Text id="rfqItemRequisition" text="{rfqDetail>PurchaseRequisition}" />
-                                    <Text id="rfqItemRequisitionItem" text="{rfqDetail>PurchaseRequisitionItem}" />
-                                    <Text id="rfqItemIncoterms" text="{rfqDetail>IncotermsClassification}" />
-                                    <Text id="rfqItemIncotermsLocation1" text="{rfqDetail>IncotermsLocation1}" />
-                                    <Text id="rfqItemIncotermsLocation2" text="{rfqDetail>IncotermsLocation2}" />
-                                    <Text id="rfqItemManufacturer" text="{rfqDetail>Manufacturer}" />
-                                    <Text id="rfqItemManufacturerPartNo" text="{rfqDetail>ManufacturerPartNumber}" />
-                                </cells>
-                            </ColumnListItem>
-                        </items>
-                    </Table>
+                    <st:SmartTable id="rfqItemsSmartTable" entitySet="RFQ_Item"
+                        tableType="Table" header="{i18n>rfqSectionItems}" showRowCount="true"
+                        enableAutoBinding="false" beforeRebindTable=".onBeforeRebindRfqTable"
+                        useVariantManagement="false" useTablePersonalisation="true" enableExport="true"
+                        requestAtLeastFields="RequestForQuotation,RequestForQuotationItem,ScheduleLine,ShortText,Material,MaterialGroup,Plant,RequestedQuantity,OrderQuantityUnit,BaseUnit,DeliveryDate,PurchaseRequisition,PurchaseRequisitionItem,IncotermsClassification,IncotermsLocation1,IncotermsLocation2,Manufacturer,ManufacturerPartNumber">
+                        <table:Table id="rfqItemsTable" selectionMode="None">
+                            <table:rowMode><rowmodes:Auto id="rfqItemsRowMode" /></table:rowMode>
+                            <table:columns>
+                                <table:Column id="rfqItemNumberColumn" width="7rem" sortProperty="RequestForQuotationItem" filterProperty="RequestForQuotationItem"><Label id="rfqItemNumberHeader" text="{i18n>rfqItem}" /><table:template><Text id="rfqItemNumber" text="{RequestForQuotationItem}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"RequestForQuotationItem","leadingProperty":"RequestForQuotationItem","columnIndex":0\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemScheduleColumn" width="7rem" sortProperty="ScheduleLine" filterProperty="ScheduleLine"><Label id="rfqItemScheduleHeader" text="{i18n>rfqScheduleLine}" /><table:template><Text id="rfqItemSchedule" text="{ScheduleLine}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"ScheduleLine","leadingProperty":"ScheduleLine","columnIndex":1\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemDescriptionColumn" width="18rem" sortProperty="ShortText" filterProperty="ShortText"><Label id="rfqItemDescriptionHeader" text="{i18n>rfqShortText}" /><table:template><Text id="rfqItemDescription" text="{ShortText}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"ShortText","leadingProperty":"ShortText","columnIndex":2\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemMaterialColumn" width="9rem" sortProperty="Material" filterProperty="Material"><Label id="rfqItemMaterialHeader" text="{i18n>rfqMaterial}" /><table:template><Text id="rfqItemMaterial" text="{Material}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"Material","leadingProperty":"Material","columnIndex":3\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemMaterialGroupColumn" width="11rem" sortProperty="MaterialGroup" filterProperty="MaterialGroup"><Label id="rfqItemMaterialGroupHeader" text="{i18n>rfqMaterialGroup}" /><table:template><Text id="rfqItemMaterialGroup" text="{MaterialGroup}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"MaterialGroup","leadingProperty":"MaterialGroup","columnIndex":4\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemPlantColumn" width="8rem" sortProperty="Plant" filterProperty="Plant"><Label id="rfqItemPlantHeader" text="{i18n>rfqPlant}" /><table:template><Text id="rfqItemPlant" text="{Plant}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"Plant","leadingProperty":"Plant","columnIndex":5\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemQuantityColumn" width="10rem" hAlign="End" sortProperty="RequestedQuantity" filterProperty="RequestedQuantity"><Label id="rfqItemQuantityHeader" text="{i18n>rfqRequestedQuantity}" /><table:template><Text id="rfqItemQuantity" text="{RequestedQuantity}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"RequestedQuantity","leadingProperty":"RequestedQuantity","columnIndex":6\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemUnitColumn" width="7rem" sortProperty="OrderQuantityUnit" filterProperty="OrderQuantityUnit"><Label id="rfqItemUnitHeader" text="{i18n>rfqOrderUnit}" /><table:template><Text id="rfqItemUnit" text="{OrderQuantityUnit}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"OrderQuantityUnit","leadingProperty":"OrderQuantityUnit","columnIndex":7\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemBaseUnitColumn" width="7rem" sortProperty="BaseUnit" filterProperty="BaseUnit"><Label id="rfqItemBaseUnitHeader" text="{i18n>rfqBaseUnit}" /><table:template><Text id="rfqItemBaseUnit" text="{BaseUnit}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"BaseUnit","leadingProperty":"BaseUnit","columnIndex":8\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemDeliveryColumn" width="10rem" sortProperty="DeliveryDate" filterProperty="DeliveryDate"><Label id="rfqItemDeliveryHeader" text="{i18n>rfqDeliveryDate}" /><table:template><Text id="rfqItemDelivery" text="{path: 'DeliveryDate', formatter: '.formatter.odataDate'}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"DeliveryDate","leadingProperty":"DeliveryDate","columnIndex":9\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemRequisitionColumn" width="12rem" sortProperty="PurchaseRequisition" filterProperty="PurchaseRequisition"><Label id="rfqItemRequisitionHeader" text="{i18n>rfqPurchaseRequisition}" /><table:template><Text id="rfqItemRequisition" text="{PurchaseRequisition}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"PurchaseRequisition","leadingProperty":"PurchaseRequisition","columnIndex":10\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemRequisitionItemColumn" width="12rem" sortProperty="PurchaseRequisitionItem" filterProperty="PurchaseRequisitionItem"><Label id="rfqItemRequisitionItemHeader" text="{i18n>rfqPurchaseRequisitionItem}" /><table:template><Text id="rfqItemRequisitionItem" text="{PurchaseRequisitionItem}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"PurchaseRequisitionItem","leadingProperty":"PurchaseRequisitionItem","columnIndex":11\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemIncotermsColumn" width="10rem" sortProperty="IncotermsClassification" filterProperty="IncotermsClassification"><Label id="rfqItemIncotermsHeader" text="{i18n>rfqIncoterms}" /><table:template><Text id="rfqItemIncoterms" text="{IncotermsClassification}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"IncotermsClassification","leadingProperty":"IncotermsClassification","columnIndex":12\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemIncotermsLocation1Column" width="12rem" sortProperty="IncotermsLocation1" filterProperty="IncotermsLocation1"><Label id="rfqItemIncotermsLocation1Header" text="{i18n>rfqIncotermsLocation1}" /><table:template><Text id="rfqItemIncotermsLocation1" text="{IncotermsLocation1}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"IncotermsLocation1","leadingProperty":"IncotermsLocation1","columnIndex":13\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemIncotermsLocation2Column" width="12rem" sortProperty="IncotermsLocation2" filterProperty="IncotermsLocation2"><Label id="rfqItemIncotermsLocation2Header" text="{i18n>rfqIncotermsLocation2}" /><table:template><Text id="rfqItemIncotermsLocation2" text="{IncotermsLocation2}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"IncotermsLocation2","leadingProperty":"IncotermsLocation2","columnIndex":14\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemManufacturerColumn" width="10rem" sortProperty="Manufacturer" filterProperty="Manufacturer"><Label id="rfqItemManufacturerHeader" text="{i18n>rfqManufacturer}" /><table:template><Text id="rfqItemManufacturer" text="{Manufacturer}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"Manufacturer","leadingProperty":"Manufacturer","columnIndex":15\}' /></table:customData></table:Column>
+                                <table:Column id="rfqItemManufacturerPartNoColumn" width="14rem" sortProperty="ManufacturerPartNumber" filterProperty="ManufacturerPartNumber"><Label id="rfqItemManufacturerPartNoHeader" text="{i18n>rfqManufacturerPartNo}" /><table:template><Text id="rfqItemManufacturerPartNo" text="{ManufacturerPartNumber}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"ManufacturerPartNumber","leadingProperty":"ManufacturerPartNumber","columnIndex":16\}' /></table:customData></table:Column>
+                            </table:columns>
+                        </table:Table>
+                    </st:SmartTable>
                 </VBox>
 
                 <VBox id="rfqBiddersCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
-                    <Title id="rfqBiddersTitle" text="{i18n>rfqSectionBidders}" class="sapUiSmallMarginBottom" />
-                    <Table
-                        id="rfqBiddersTable"
-                        items="{rfqDetail>/bidders}"
-                        noDataText="{i18n>rfqNoBidders}"
-                        growing="true"
-                        fixedLayout="false"
-                    >
-                        <columns>
-                            <Column id="rfqBidderSupplierColumn"><Text id="rfqBidderSupplierHeader" text="{i18n>rfqSupplier}" /></Column>
-                            <Column id="rfqBidderNameColumn"><Text id="rfqBidderNameHeader" text="{i18n>rfqSupplierName}" /></Column>
-                            <Column id="rfqBidderFunctionColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="rfqBidderFunctionHeader" text="{i18n>rfqPartnerFunction}" /></Column>
-                            <Column id="rfqBidderCounterColumn" minScreenWidth="Tablet" demandPopin="true"><Text id="rfqBidderCounterHeader" text="{i18n>rfqPartnerCounter}" /></Column>
-                        </columns>
-                        <items>
-                            <ColumnListItem id="rfqBidderRow" vAlign="Middle">
-                                <cells>
-                                    <Text id="rfqBidderSupplier" text="{rfqDetail>Supplier}" />
-                                    <Text id="rfqBidderName" text="{rfqDetail>SupplierName}" />
-                                    <Text id="rfqBidderFunction" text="{rfqDetail>PartnerFunction}" />
-                                    <Text id="rfqBidderCounter" text="{rfqDetail>PartnerCounter}" />
-                                </cells>
-                            </ColumnListItem>
-                        </items>
-                    </Table>
+                    <st:SmartTable id="rfqBiddersSmartTable" entitySet="RFQ_Bidder"
+                        tableType="Table" header="{i18n>rfqSectionBidders}" showRowCount="true"
+                        enableAutoBinding="false" beforeRebindTable=".onBeforeRebindRfqTable"
+                        useVariantManagement="false" useTablePersonalisation="true" enableExport="true"
+                        requestAtLeastFields="RequestForQuotation,Supplier,SupplierName,PartnerFunction,PartnerCounter">
+                        <table:Table id="rfqBiddersTable" selectionMode="None">
+                            <table:rowMode><rowmodes:Auto id="rfqBiddersRowMode" /></table:rowMode>
+                            <table:columns>
+                                <table:Column id="rfqBidderSupplierColumn" width="12rem" sortProperty="Supplier" filterProperty="Supplier"><Label id="rfqBidderSupplierHeader" text="{i18n>rfqSupplier}" /><table:template><Text id="rfqBidderSupplier" text="{Supplier}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"Supplier","leadingProperty":"Supplier","columnIndex":0\}' /></table:customData></table:Column>
+                                <table:Column id="rfqBidderNameColumn" width="16rem" sortProperty="SupplierName" filterProperty="SupplierName"><Label id="rfqBidderNameHeader" text="{i18n>rfqSupplierName}" /><table:template><Text id="rfqBidderName" text="{SupplierName}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"SupplierName","leadingProperty":"SupplierName","columnIndex":1\}' /></table:customData></table:Column>
+                                <table:Column id="rfqBidderFunctionColumn" width="12rem" sortProperty="PartnerFunction" filterProperty="PartnerFunction"><Label id="rfqBidderFunctionHeader" text="{i18n>rfqPartnerFunction}" /><table:template><Text id="rfqBidderFunction" text="{PartnerFunction}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"PartnerFunction","leadingProperty":"PartnerFunction","columnIndex":2\}' /></table:customData></table:Column>
+                                <table:Column id="rfqBidderCounterColumn" width="12rem" sortProperty="PartnerCounter" filterProperty="PartnerCounter"><Label id="rfqBidderCounterHeader" text="{i18n>rfqPartnerCounter}" /><table:template><Text id="rfqBidderCounter" text="{PartnerCounter}" wrapping="false" /></table:template><table:customData><core:CustomData key="p13nData" value='\{"columnKey":"PartnerCounter","leadingProperty":"PartnerCounter","columnIndex":3\}' /></table:customData></table:Column>
+                            </table:columns>
+                        </table:Table>
+                    </st:SmartTable>
                 </VBox>
             </VBox>
         </content>

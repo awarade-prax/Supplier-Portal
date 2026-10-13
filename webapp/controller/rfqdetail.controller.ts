@@ -8,6 +8,8 @@ import FilterOperator from "sap/ui/model/FilterOperator";
 import ResourceModel from "sap/ui/model/resource/ResourceModel";
 import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import { Route$PatternMatchedEvent } from "sap/ui/core/routing/Route";
+import { SmartTable$BeforeRebindTableEvent } from "sap/ui/comp/smarttable/SmartTable";
+import SmartTable from "sap/ui/comp/smarttable/SmartTable";
 import formatter from "../model/formatter";
 
 /**
@@ -15,9 +17,11 @@ import formatter from "../model/formatter";
  */
 export default class rfqdetail extends Controller {
     public formatter = formatter;
+    private _rfqNumber = "";
 
     public onInit(): void {
         this.getView()!.setModel(new JSONModel({ header: {}, items: [], bidders: [] }), "rfqDetail");
+        this.getView()!.setModel(this.getOwnerComponent()!.getModel("rfq") as ODataModel);
         UIComponent.getRouterFor(this).getRoute("rfqDetail")!.attachPatternMatched((event) => this._onMatched(event));
     }
 
@@ -26,18 +30,17 @@ export default class rfqdetail extends Controller {
         const view = this.getView()!;
         const model = this.getOwnerComponent()!.getModel("rfq") as ODataModel;
         const detailModel = view.getModel("rfqDetail") as JSONModel;
+        this._rfqNumber = args.id;
         detailModel.setData({ header: {}, items: [], bidders: [] });
         view.setBusy(true);
 
         model.metadataLoaded().then(() => {
             const headerPath = "/" + model.createKey("RFQ_Header", { RequestForQuotation: args.id });
-            return globalThis.Promise.all([
-                this._read(model, headerPath),
-                this._readCollection(model, "RFQ_Item", args.id),
-                this._readCollection(model, "RFQ_Bidder", args.id)
-            ]);
-        }).then(([header, items, bidders]) => {
-            detailModel.setData({ header, items, bidders });
+            return this._read(model, headerPath);
+        }).then((header) => {
+            detailModel.setData({ header, items: [], bidders: [] });
+            (this.byId("rfqItemsSmartTable") as SmartTable | undefined)?.rebindTable(true);
+            (this.byId("rfqBiddersSmartTable") as SmartTable | undefined)?.rebindTable(true);
         }).catch((error: unknown) => {
             MessageBox.error(this._getErrorMessage(error));
         }).finally(() => {
@@ -51,23 +54,13 @@ export default class rfqdetail extends Controller {
         });
     }
 
-    private async _readCollection(model: ODataModel, entitySet: string, rfqNumber: string): Promise<object[]> {
-        const data = await new globalThis.Promise<object>((resolve, reject) => {
-            model.read("/" + entitySet, {
-                filters: [new Filter("RequestForQuotation", FilterOperator.EQ, rfqNumber)],
-                success: resolve,
-                error: reject
-            });
-        });
-        const results = "results" in data ? data.results : undefined;
-        if (!Array.isArray(results)) {
-            throw new Error(this._getText("rfqInvalidResponse", [entitySet]));
+    public onBeforeRebindRfqTable(e: SmartTable$BeforeRebindTableEvent): void {
+        const params = e.getParameter("bindingParams") as unknown as { filters: Filter[]; preventTableBind?: boolean };
+        if (!this._rfqNumber) {
+            params.preventTableBind = true;
+            return;
         }
-        const rows = results.filter((row: unknown): row is object => typeof row === "object" && row !== null);
-        if (rows.length !== results.length) {
-            throw new Error(this._getText("rfqInvalidResponse", [entitySet]));
-        }
-        return rows;
+        params.filters.push(new Filter("RequestForQuotation", FilterOperator.EQ, this._rfqNumber));
     }
 
     private _getText(key: string, argumentsList?: string[]): string {

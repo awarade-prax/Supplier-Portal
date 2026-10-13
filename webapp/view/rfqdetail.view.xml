@@ -19,20 +19,25 @@
                 <ObjectHeader
                     id="rfqObjectHeader"
                     class="supplierCard"
-                    title="{rfqDetail>/header/RequestForQuotation}"
-                    intro="{rfqDetail>/header/RFQDescription}"
+                    title="{i18n>rfqPurchaseItemTitle}"
+                    intro="{rfqDetail>/header/RequestForQuotation}"
                     number="{rfqDetail>/header/TargetValue}"
                     numberUnit="{rfqDetail>/header/DocumentCurrency}"
                 >
                     <attributes>
-                        <ObjectAttribute id="rfqObjectType" title="{i18n>rfqType}" text="{rfqDetail>/header/RFQType}" />
-                        <ObjectAttribute id="rfqObjectOrg" title="{i18n>purchasingOrganization}" text="{rfqDetail>/header/PurchasingOrganization}" />
-                        <ObjectAttribute id="rfqObjectGroup" title="{i18n>purchasingGroup}" text="{rfqDetail>/header/PurchasingGroup}" />
+                        <ObjectAttribute id="rfqObjectCreatedBy" title="{i18n>createdBy}" text="{rfqDetail>/header/CreatedBy}" />
+                        <ObjectAttribute id="rfqObjectCreatedOn" title="{i18n>createdOn}" text="{path: 'rfqDetail>/header/CreationDate', formatter: '.formatter.odataDate'}" />
+                        <ObjectAttribute id="rfqObjectPublishingDate" title="{i18n>publishingDate}" text="{path: 'rfqDetail>/header/PublishingDate', formatter: '.formatter.odataDate'}" />
+                        <ObjectAttribute id="rfqObjectApprover" title="{i18n>approver}" text="{i18n>notStarted}" />
                     </attributes>
+                    <statuses>
+                        <ObjectStatus id="rfqObjectStatus" title="{i18n>status}" text="{i18n>rfqStatusInPreparation}" />
+                        <ObjectStatus id="rfqObjectDeadline" title="{i18n>quotationDeadline}" text="{path: 'rfqDetail>/header/QuotationDeadline', formatter: '.formatter.odataDate'}" />
+                    </statuses>
                 </ObjectHeader>
 
                 <VBox id="rfqGeneralCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
-                    <Title id="rfqGeneralTitle" text="{i18n>rfqBasicData}" class="sapUiSmallMarginBottom" />
+                    <Title id="rfqGeneralTitle" text="{i18n>rfqSectionGeneral}" class="sapUiSmallMarginBottom" />
                     <l:Grid id="rfqGeneralGrid" defaultSpan="XL3 L4 M6 S12">
                         <VBox id="rfqTypeBox"><Label id="rfqTypeLabel" text="{i18n>rfqType}" /><Text id="rfqTypeValue" text="{rfqDetail>/header/RFQType}" /></VBox>
                         <VBox id="rfqDescriptionBox"><Label id="rfqDescriptionLabel" text="{i18n>rfqDescription}" /><Text id="rfqDescriptionValue" text="{rfqDetail>/header/RFQDescription}" /></VBox>
@@ -40,22 +45,10 @@
                         <VBox id="rfqCurrencyBox"><Label id="rfqCurrencyLabel" text="{i18n>documentCurrency}" /><Text id="rfqCurrencyValue" text="{rfqDetail>/header/DocumentCurrency}" /></VBox>
                         <VBox id="rfqTargetValueBox"><Label id="rfqTargetValueLabel" text="{i18n>targetValue}" /><Text id="rfqTargetValueValue" text="{rfqDetail>/header/TargetValue}" /></VBox>
                         <VBox id="rfqFollowOnBox"><Label id="rfqFollowOnLabel" text="{i18n>followOnDocType}" /><Text id="rfqFollowOnValue" text="{rfqDetail>/header/FollowOnDocumentType}" /></VBox>
-                    </l:Grid>
-                </VBox>
-
-                <VBox id="rfqOrganizationCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
-                    <Title id="rfqOrganizationTitle" text="{i18n>rfqOrganization}" class="sapUiSmallMarginBottom" />
-                    <l:Grid id="rfqOrganizationGrid" defaultSpan="XL3 L4 M6 S12">
                         <VBox id="rfqPurchasingOrgBox"><Label id="rfqPurchasingOrgLabel" text="{i18n>purchasingOrganization}" /><Text id="rfqPurchasingOrgValue" text="{rfqDetail>/header/PurchasingOrganization}" /></VBox>
                         <VBox id="rfqPurchasingGroupBox"><Label id="rfqPurchasingGroupLabel" text="{i18n>purchasingGroup}" /><Text id="rfqPurchasingGroupValue" text="{rfqDetail>/header/PurchasingGroup}" /></VBox>
                         <VBox id="rfqCompanyCodeBox"><Label id="rfqCompanyCodeLabel" text="{i18n>companyCode}" /><Text id="rfqCompanyCodeValue" text="{rfqDetail>/header/CompanyCode}" /></VBox>
                         <VBox id="rfqCreatedByBox"><Label id="rfqCreatedByLabel" text="{i18n>createdBy}" /><Text id="rfqCreatedByValue" text="{rfqDetail>/header/CreatedBy}" /></VBox>
-                    </l:Grid>
-                </VBox>
-
-                <VBox id="rfqDatesCard" class="supplierCard supplierCardPadded sapUiSmallMarginTop">
-                    <Title id="rfqDatesTitle" text="{i18n>rfqImportantDates}" class="sapUiSmallMarginBottom" />
-                    <l:Grid id="rfqDatesGrid" defaultSpan="XL3 L4 M6 S12">
                         <VBox id="rfqPublishingDateBox"><Label id="rfqPublishingDateLabel" text="{i18n>publishingDate}" /><Text id="rfqPublishingDateValue" text="{path: 'rfqDetail>/header/PublishingDate', formatter: '.formatter.odataDate'}" /></VBox>
                         <VBox id="rfqDeadlineBox"><Label id="rfqDeadlineLabel" text="{i18n>quotationDeadline}" /><Text id="rfqDeadlineValue" text="{path: 'rfqDetail>/header/QuotationDeadline', formatter: '.formatter.odataDate'}" /></VBox>
                         <VBox id="rfqCreationDateBox"><Label id="rfqCreationDateLabel" text="{i18n>createdOn}" /><Text id="rfqCreationDateValue" text="{path: 'rfqDetail>/header/CreationDate', formatter: '.formatter.odataDate'}" /></VBox>

@@ -375,8 +375,8 @@ app.post(
         const {
             toEmail,
             accessToken,
-            supplierName,
-            rfqNumber
+            rfqNumber,
+            quotationDeadline
         } = req.body || {};
 
         if (typeof toEmail !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toEmail.trim())) {
@@ -403,22 +403,33 @@ app.post(
         const cfg = getSmtpConfig();
         const senderName = cleanLine(cfg.SMTP_SENDER_NAME) || "Supplier Portal";
         const senderUser = cfg.SMTP_USER;
-        const safeSupplierName = escapeHtml(supplierName || "Supplier");
         const safeRfqNumber = escapeHtml(rfqNumber);
-        const safeSenderName = escapeHtml(senderName);
+        const safeQuotationDeadline = escapeHtml(quotationDeadline || "the stated deadline");
         const portalUrl = `${PORTAL_BASE_URL}/?token=${encodeURIComponent(accessToken.trim())}`;
-        const subject = cleanLine(`Request for Quotation ${rfqNumber}`);
+        const subject = "Request for Quotation - Submit Your Quotation";
         const body = `
             <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">
-                <p>Dear ${safeSupplierName},</p>
-                <p>You are invited to participate in Request for Quotation <b>${safeRfqNumber}</b>.</p>
-                <p>Please use the button below to access the Supplier Portal.</p>
+                <p>Dear Sir/Madam,</p>
+                <p>Please find attached our Request for Quotation <b>${safeRfqNumber}</b> for the listed materials/services.</p>
+                <p>Kindly submit your quotation with the following details against each item:</p>
+                <ul>
+                    <li>Unit price and currency</li>
+                    <li>Delivery date or lead time</li>
+                    <li>Payment terms</li>
+                    <li>Quotation validity</li>
+                    <li>Technical specifications and any deviations from our requirements</li>
+                </ul>
+                <p>Please submit your response by <b>${safeQuotationDeadline}</b>.</p>
                 <p style="margin: 25px 0;">
                     <a href="${portalUrl}" style="background-color: #0a6ed1; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">
                         Open Supplier Portal
                     </a>
                 </p>
-                <p>Regards,<br>${safeSenderName}</p>
+                <p>For any clarification, please contact "Purchase Department" at
+                    <a href="mailto:purchase@serumindia.com">purchase@serumindia.com</a>.
+                </p>
+                <p>We look forward to receiving your quotation.</p>
+                <p>Best regards,<br>Serum Institute of India</p>
             </div>
         `;
 

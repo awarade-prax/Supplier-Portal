@@ -16,7 +16,6 @@ import formatter from "../model/formatter";
 
 interface RfqBidder {
     Supplier?: string;
-    SupplierName?: string;
 }
 
 interface SapCreation {
@@ -136,11 +135,11 @@ export default class rfqdetail extends Controller {
             const bidderRows = await this._readCollection<RfqBidder>(rfqModel, "/RFQ_Bidder", [
                 new Filter("RequestForQuotation", FilterOperator.EQ, this._rfqNumber)
             ]);
-            const bidders = new Map<string, RfqBidder>();
+            const bidders = new Set<string>();
             bidderRows.forEach((bidder) => {
                 const supplierId = bidder.Supplier?.trim();
-                if (supplierId && !bidders.has(supplierId)) {
-                    bidders.set(supplierId, bidder);
+                if (supplierId) {
+                    bidders.add(supplierId);
                 }
             });
 
@@ -149,7 +148,7 @@ export default class rfqdetail extends Controller {
                 return;
             }
 
-            const results = await globalThis.Promise.all(Array.from(bidders, async ([supplierId, bidder]) => {
+            const results = await globalThis.Promise.all(Array.from(bidders, async (supplierId) => {
                 try {
                     const sapCreations = await this._readCollection<SapCreation>(onboardingModel, "/YY1_SAPCREATION_SUPPLIER_ONBOA", [
                         new Filter("SupplierNumber", FilterOperator.EQ, supplierId)
@@ -170,14 +169,16 @@ export default class rfqdetail extends Controller {
                         throw new Error(this._getText("rfqEmailOnboardingDataMissing"));
                     }
 
+                    const quotationDeadline = (view.getModel("rfqDetail") as JSONModel)
+                        .getProperty("/header/QuotationDeadline") as Date | string | undefined;
                     const response = await fetch("/mail-api/send-rfq-invitation", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
                             toEmail: onboarding.SupplierEmail,
                             accessToken: onboarding.AccessToken,
-                            supplierName: bidder.SupplierName ?? "",
-                            rfqNumber: this._rfqNumber
+                            rfqNumber: this._rfqNumber,
+                            quotationDeadline: quotationDeadline ? this.formatter.odataDate(quotationDeadline) : ""
                         })
                     });
                     if (!response.ok) {

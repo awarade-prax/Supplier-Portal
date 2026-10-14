@@ -365,6 +365,87 @@ app.post(
 );
 
 // ---------------------------------------------------------------------
+// Send RFQ invitation to a registered supplier
+// ---------------------------------------------------------------------
+app.post(
+    "/mail-api/send-rfq-invitation",
+    authMiddleware,
+    async (req, res) => {
+
+        const {
+            toEmail,
+            accessToken,
+            supplierName,
+            rfqNumber
+        } = req.body || {};
+
+        if (typeof toEmail !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toEmail.trim())) {
+            return res.status(400).json({
+                status: "error",
+                message: "A valid toEmail is required"
+            });
+        }
+
+        if (typeof accessToken !== "string" || !accessToken.trim()) {
+            return res.status(400).json({
+                status: "error",
+                message: "accessToken is required"
+            });
+        }
+
+        if (typeof rfqNumber !== "string" || !rfqNumber.trim()) {
+            return res.status(400).json({
+                status: "error",
+                message: "rfqNumber is required"
+            });
+        }
+
+        const cfg = getSmtpConfig();
+        const senderName = cleanLine(cfg.SMTP_SENDER_NAME) || "Supplier Portal";
+        const senderUser = cfg.SMTP_USER;
+        const safeSupplierName = escapeHtml(supplierName || "Supplier");
+        const safeRfqNumber = escapeHtml(rfqNumber);
+        const safeSenderName = escapeHtml(senderName);
+        const portalUrl = `${PORTAL_BASE_URL}/?token=${encodeURIComponent(accessToken.trim())}`;
+        const subject = cleanLine(`Request for Quotation ${rfqNumber}`);
+        const body = `
+            <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">
+                <p>Dear ${safeSupplierName},</p>
+                <p>You are invited to participate in Request for Quotation <b>${safeRfqNumber}</b>.</p>
+                <p>Please use the button below to access the Supplier Portal.</p>
+                <p style="margin: 25px 0;">
+                    <a href="${portalUrl}" style="background-color: #0a6ed1; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block; font-weight: bold;">
+                        Open Supplier Portal
+                    </a>
+                </p>
+                <p>Regards,<br>${safeSenderName}</p>
+            </div>
+        `;
+
+        try {
+            const transporter = getTransporter();
+            await transporter.sendMail({
+                from: `"${senderName}" <${senderUser}>`,
+                to: cleanLine(toEmail),
+                subject,
+                html: body
+            });
+
+            return res.status(200).json({
+                status: "success",
+                message: "RFQ invitation sent successfully"
+            });
+        } catch (err) {
+            console.error("SMTP send failed:", err);
+            return res.status(500).json({
+                status: "error",
+                message: (err && err.message) || "Mail send failed"
+            });
+        }
+    }
+);
+
+// ---------------------------------------------------------------------
 // Health check
 // ---------------------------------------------------------------------
 app.get(

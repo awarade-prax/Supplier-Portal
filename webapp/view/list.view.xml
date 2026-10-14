@@ -40,8 +40,17 @@
                     enableAutoBinding="true" beforeRebindTable=".onBeforeRebindTable" useVariantManagement="false"
                     useTablePersonalisation="true" enableExport="true"
                     requestAtLeastFields="SAP_UUID,REQID,ID,SupplierName,Status,Status_Text,SupplierEmail,PurchasingOrganization,SupplierCategory">
+                    <st:customToolbar>
+                        <OverflowToolbar id="onboardingToolbar">
+                            <ToolbarSpacer id="onboardingToolbarSpacer" />
+                            <Button id="approveSelectedButton" text="{i18n>approve}" type="Accept"
+                                visible="{view>/canApprove}" enabled="{view>/hasSelection}"
+                                press=".onApproveSelected" />
+                        </OverflowToolbar>
+                    </st:customToolbar>
                     <table:Table id="onboardingTable"
-                        selectionMode="None" rowActionCount="1">
+                        selectionMode="None" rowActionCount="1"
+                        rowSelectionChange=".onSelectionChange">
                         <table:rowMode>
                             <rowmodes:Auto id="rowModeAuto" />
                         </table:rowMode>

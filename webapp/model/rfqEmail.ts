@@ -15,6 +15,7 @@ interface SapCreation {
 interface SupplierOnboarding {
     SAP_UUID?: string;
     ID?: string;
+    SupplierName?: string;
     SupplierEmail?: string;
     AccessToken?: string;
 }
@@ -125,7 +126,8 @@ export async function sendRfqEmails(
                     toEmail: email,
                     accessToken: onboarding.AccessToken,
                     rfqNumber,
-                    quotationDeadline
+                    quotationDeadline,
+                    supplierName: onboarding.SupplierName
                 })
             });
             if (!response.ok) {

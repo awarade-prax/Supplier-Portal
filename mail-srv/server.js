@@ -374,7 +374,8 @@ app.post(
             toEmail,
             accessToken,
             rfqNumber,
-            quotationDeadline
+            quotationDeadline,
+            supplierName
         } = req.body || {};
 
         if (typeof toEmail !== "string" || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(toEmail.trim())) {
@@ -402,12 +403,13 @@ app.post(
         const senderName = cleanLine(cfg.SMTP_SENDER_NAME) || "Supplier Portal";
         const senderUser = cfg.SMTP_USER;
         const safeRfqNumber = escapeHtml(rfqNumber);
+        const safeSupplierName = escapeHtml(supplierName || "Supplier");
         const safeQuotationDeadline = escapeHtml(quotationDeadline || "the stated deadline");
         const portalUrl = `${PORTAL_BASE_URL}/?token=${encodeURIComponent(accessToken.trim())}`;
-        const subject = "Request for Quotation - Submit Your Quotation";
+        const subject = `Submit Your Quotation for RFQ - ${cleanLine(rfqNumber)}`;
         const body = `
             <div style="font-family: Arial, sans-serif; font-size: 14px; color: #333333;">
-                <p>Dear Sir/Madam,</p>
+                <p>Dear ${safeSupplierName},</p>
                 <p>Please find attached our Request for Quotation <b>${safeRfqNumber}</b> for the listed materials/services.</p>
                 <p>Kindly submit your quotation with the following details against each item:</p>
                 <ul>

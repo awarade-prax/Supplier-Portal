@@ -41,9 +41,9 @@ export interface OnboardingData {
     name: string;
     email: string;
     purchasingOrg: string;
-    general: Row;
-    tax: Row;
-    bank: Row;
+    general: Record<string, unknown>;
+    tax: Record<string, unknown>;
+    bank: Record<string, unknown>;
 }
 
 export interface CreatedSupplier {

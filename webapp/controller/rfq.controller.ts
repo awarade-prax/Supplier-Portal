@@ -2,10 +2,8 @@ import Controller from "sap/ui/core/mvc/Controller";
 import UIComponent from "sap/ui/core/UIComponent";
 import ODataModel from "sap/ui/model/odata/v2/ODataModel";
 import MessageBox from "sap/m/MessageBox";
-import Dialog from "sap/m/Dialog";
-import MText from "sap/m/Text";
-import ProgressIndicator from "sap/m/ProgressIndicator";
 import Button from "sap/m/Button";
+import { ValueState } from "sap/ui/core/library";
 import ResourceModel from "sap/ui/model/resource/ResourceModel";
 import ResourceBundle from "sap/base/i18n/ResourceBundle";
 import { RowActionItem$PressEvent } from "sap/ui/table/RowActionItem";
@@ -15,9 +13,9 @@ import formatter from "../model/formatter";
 import {
     getRfqEmailErrorMessage,
     RfqEmailBatchResult,
-    RfqEmailProgress,
     sendRfqEmails
 } from "../model/rfqEmail";
+import { createRfqEmailDialog } from "../model/rfqEmailDialog";
 
 /**
  * @namespace supplierportal.controller
@@ -73,27 +71,14 @@ export default class rfq extends Controller {
 
         const button = this.byId("rfqSendEmailsButton") as Button | undefined;
         button?.setEnabled(false);
-        const progressText = new MText({ text: "" });
-        const progressIndicator = new ProgressIndicator({ percentValue: 0, displayValue: "" });
-        const dialog = new Dialog({
-            title: this._getText("rfqEmailProcessingTitle"),
-            contentWidth: "30rem",
-            content: [progressText, progressIndicator],
-            verticalScrolling: false,
-            horizontalScrolling: false
-        });
+        const emailDialog = createRfqEmailDialog((key, args) => this._getText(key, args));
         const results: RfqEmailBatchResult[] = [];
-        dialog.open();
+        emailDialog.dialog.open();
 
         try {
             const rfqModel = this.getOwnerComponent()!.getModel("rfq") as ODataModel;
             const onboardingModel = this.getOwnerComponent()!.getModel() as ODataModel;
             for (const [index, row] of rfqRows.entries()) {
-                progressText.setText(this._getText("rfqEmailProcessingRfq", [
-                    String(index + 1),
-                    String(rfqRows.length),
-                    row.rfqNumber
-                ]));
                 const quotationDeadline = row.quotationDeadline
                     ? this.formatter.odataDate(row.quotationDeadline)
                     : "";
@@ -103,93 +88,45 @@ export default class rfq extends Controller {
                         onboardingModel,
                         row.rfqNumber,
                         quotationDeadline,
-                        (progress) => this._updateProgress(progressText, progressIndicator, index, rfqRows.length, progress)
+                        (progress) => emailDialog.updateProgress(progress, index, rfqRows.length),
+                        (recipientResult) => emailDialog.setRecipientResult(recipientResult)
                     );
                     results.push(result);
+                    if (!result.recipients.length) {
+                        emailDialog.addRfqMessage(
+                            row.rfqNumber,
+                            this._getText("rfqEmailStatusNotSent"),
+                            this._getText("rfqEmailRfqNoBidders", [row.rfqNumber]),
+                            ValueState.Warning
+                        );
+                    }
                 } catch (error: unknown) {
+                    const message = getRfqEmailErrorMessage(error);
                     results.push({
                         rfqNumber: row.rfqNumber,
                         recipients: [],
-                        error: getRfqEmailErrorMessage(error)
+                        error: message
                     });
+                    emailDialog.addRfqMessage(
+                        row.rfqNumber,
+                        this._getText("rfqEmailStatusFailed"),
+                        message,
+                        ValueState.Error
+                    );
                 }
-                progressIndicator.setPercentValue(Math.round(((index + 1) / rfqRows.length) * 100));
-                progressIndicator.setDisplayValue(`${index + 1} / ${rfqRows.length}`);
             }
         } finally {
-            dialog.close();
-            dialog.destroy();
             table.clearSelection();
             button?.setEnabled(false);
         }
 
-        this._showEmailResults(results);
-    }
-
-    private _updateProgress(
-        text: MText,
-        indicator: ProgressIndicator,
-        completedRfqs: number,
-        totalRfqs: number,
-        progress: RfqEmailProgress
-    ): void {
-        text.setText(this._getText("rfqEmailProcessingSupplier", [
-            String(completedRfqs + 1),
-            String(totalRfqs),
-            progress.rfqNumber,
-            String(progress.supplierIndex),
-            String(progress.supplierCount),
-            progress.supplierId
-        ]));
-        const percent = ((completedRfqs + progress.supplierIndex / progress.supplierCount) / totalRfqs) * 100;
-        indicator.setPercentValue(Math.round(percent));
-        indicator.setDisplayValue(`${completedRfqs + 1} / ${totalRfqs}`);
-    }
-
-    private _showEmailResults(results: RfqEmailBatchResult[]): void {
-        const lines: string[] = [];
-        let sentCount = 0;
-        let failedCount = 0;
-        let hasWarnings = false;
-        results.forEach((result) => {
-            if (result.error) {
-                failedCount++;
-                lines.push(this._getText("rfqEmailRfqFailed", [result.rfqNumber, result.error]));
-            } else if (!result.recipients.length) {
-                hasWarnings = true;
-                lines.push(this._getText("rfqEmailRfqNoBidders", [result.rfqNumber]));
-            } else {
-                result.recipients.forEach((recipient) => {
-                    if (recipient.sent) {
-                        sentCount++;
-                        lines.push(this._getText("rfqEmailRecipientSent", [
-                            recipient.rfqNumber,
-                            recipient.supplierId,
-                            recipient.email ?? ""
-                        ]));
-                    } else {
-                        failedCount++;
-                        lines.push(this._getText("rfqEmailRecipientFailed", [
-                            recipient.rfqNumber,
-                            recipient.supplierId,
-                            recipient.email || this._getText("rfqEmailAddressUnavailable"),
-                            recipient.error ?? this._getText("rfqEmailUnknownError")
-                        ]));
-                    }
-                });
-            }
-        });
-
-        const summary = this._getText("rfqEmailBatchSummary", [
+        const sentCount = results.reduce((sum, result) => sum + result.recipients.filter((recipient) => recipient.sent).length, 0);
+        const failedCount = results.reduce((sum, result) =>
+            sum + result.recipients.filter((recipient) => !recipient.sent).length + (result.error ? 1 : 0), 0);
+        emailDialog.complete(this._getText("rfqEmailBatchSummary", [
             String(results.length),
             String(sentCount),
             String(failedCount)
-        ]);
-        const message = `${summary}\n\n${lines.join("\n")}`;
-        if (failedCount || hasWarnings) {
-            MessageBox.warning(message, { title: this._getText("rfqEmailResultsTitle") });
-        } else {
-            MessageBox.success(message, { title: this._getText("rfqEmailResultsTitle") });
-        }
+        ]));
     }
 }

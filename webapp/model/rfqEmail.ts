@@ -71,7 +71,8 @@ export async function sendRfqEmails(
     onboardingModel: ODataModel,
     rfqNumber: string,
     quotationDeadline: string,
-    onProgress?: (progress: RfqEmailProgress) => void
+    onProgress?: (progress: RfqEmailProgress) => void,
+    onRecipientResult?: (result: RfqEmailRecipientResult) => void
 ): Promise<RfqEmailBatchResult> {
     const bidderRows = await readCollection<RfqBidder>(rfqModel, "/RFQ_Bidder", [
         new Filter("RequestForQuotation", FilterOperator.EQ, rfqNumber)
@@ -130,9 +131,13 @@ export async function sendRfqEmails(
             if (!response.ok) {
                 throw new Error(`Mail service responded with status ${response.status}.`);
             }
-            recipients.push({ rfqNumber, supplierId, email, sent: true });
+            const recipient = { rfqNumber, supplierId, email, sent: true };
+            recipients.push(recipient);
+            onRecipientResult?.(recipient);
         } catch (error: unknown) {
-            recipients.push({ rfqNumber, supplierId, email, sent: false, error: errorMessage(error) });
+            const recipient = { rfqNumber, supplierId, email, sent: false, error: errorMessage(error) };
+            recipients.push(recipient);
+            onRecipientResult?.(recipient);
         }
     }
 

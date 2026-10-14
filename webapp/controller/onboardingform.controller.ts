@@ -145,7 +145,7 @@ export default class onboardingform extends Controller {
         PurchasingOrganization: string;
         SupplierCategory: string;
     }, sAccessToken: string): void {
-        fetch("/mail-api/send-confirmation", {
+        fetch(this.getOwnerComponent()!.getManifestObject().resolveUri("mail-api/send-confirmation"), {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"

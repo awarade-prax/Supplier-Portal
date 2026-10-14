@@ -25,9 +25,7 @@ app.use(express.json());
 // Example:
 // https://your-app.cfapps.in30.hana.ondemand.com/?token=ABC123
 // ---------------------------------------------------------------------
-const PORTAL_BASE_URL =
-    process.env.PORTAL_BASE_URL ||
-    "https://praxis-info-solutions-pvt--ltd--dev-praxis-development-302e48aa.cfapps.in30.hana.ondemand.com";
+const PORTAL_BASE_URL = "https://praxis-info-solutions-pvt--ltd--dev-praxis-development-302e48aa.cfapps.in30.hana.ondemand.com";
 
 // ---------------------------------------------------------------------
 // XSUAA authentication

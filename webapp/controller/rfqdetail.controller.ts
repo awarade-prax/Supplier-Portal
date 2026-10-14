@@ -171,7 +171,7 @@ export default class rfqdetail extends Controller {
 
                     const quotationDeadline = (view.getModel("rfqDetail") as JSONModel)
                         .getProperty("/header/QuotationDeadline") as Date | string | undefined;
-                    const response = await fetch("/mail-api/send-rfq-invitation", {
+                    const response = await fetch(this.getOwnerComponent()!.getManifestObject().resolveUri("mail-api/send-rfq-invitation"), {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({

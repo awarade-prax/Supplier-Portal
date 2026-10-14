@@ -60,6 +60,11 @@ modules:
     parameters:
       memory: 256M
       disk-quota: 512M
+    properties:
+      # Base URL of the deployed Supplier Portal app. The mails append "/?token=<AccessToken>" to it.
+      # Open the app from BTP cockpit > HTML5 Applications, copy the URL and remove "/index.html".
+      # Format: https://<subdomain>.cfapps.<region>.hana.ondemand.com/supplierportal.supplierportal
+      PORTAL_BASE_URL: https://praxis-info-solutions-pvt--ltd--dev-praxis-development-302e48aa.cfapps.in30.hana.ondemand.com
     provides:
       - name: mail-srv-api
         properties:
@@ -126,6 +131,7 @@ resources:
                 URL: ~{mail-srv-api/srv-url}
                 HTML5.ForwardAuthToken: true
                 HTML5.DynamicDestination: true
+                sap.cloud.service: supplierportal
             existing_destinations_policy: update
         version: 1.0.0
       service: destination
@@ -133,7 +139,7 @@ resources:
       service-plan: lite
 
   # Existing user-provided service with the SMTP login details.
-  # Create it once with:  cf cups supplierportal-smtp-credentials -t supplierportal-smtp-credentials -p '{...}'
+  # Create it BEFORE deploying (see deployment steps):  cf cups supplierportal-smtp-credentials -t supplierportal-smtp-credentials -p '{...}'
   - name: supplierportal-smtp-credentials
     type: org.cloudfoundry.existing-service
     parameters:

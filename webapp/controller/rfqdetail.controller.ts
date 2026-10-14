@@ -3,7 +3,6 @@ import UIComponent from "sap/ui/core/UIComponent";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import ODataModel from "sap/ui/model/odata/v2/ODataModel";
 import MessageBox from "sap/m/MessageBox";
-import MessageToast from "sap/m/MessageToast";
 import Button from "sap/m/Button";
 import Filter from "sap/ui/model/Filter";
 import FilterOperator from "sap/ui/model/FilterOperator";
@@ -13,23 +12,15 @@ import { Route$PatternMatchedEvent } from "sap/ui/core/routing/Route";
 import { SmartTable$BeforeRebindTableEvent } from "sap/ui/comp/smarttable/SmartTable";
 import SmartTable from "sap/ui/comp/smarttable/SmartTable";
 import formatter from "../model/formatter";
-
-interface RfqBidder {
-    Supplier?: string;
-}
-
-interface SapCreation {
-    SupplierNumber?: string;
-    SupplierID?: string;
-    SAP_PARENT_UUID?: string;
-}
-
-interface SupplierOnboarding {
-    SAP_UUID?: string;
-    ID?: string;
-    SupplierEmail?: string;
-    AccessToken?: string;
-}
+import Dialog from "sap/m/Dialog";
+import MText from "sap/m/Text";
+import ProgressIndicator from "sap/m/ProgressIndicator";
+import {
+    getRfqEmailErrorMessage,
+    RfqEmailBatchResult,
+    RfqEmailProgress,
+    sendRfqEmails
+} from "../model/rfqEmail";
 
 /**
  * @namespace supplierportal.controller
@@ -73,22 +64,6 @@ export default class rfqdetail extends Controller {
         });
     }
 
-    private _readCollection<T>(model: ODataModel, path: string, filters: Filter[]): Promise<T[]> {
-        return new globalThis.Promise<T[]>((resolve, reject) => {
-            model.read(path, {
-                filters,
-                success: (data: { results?: T[] }) => {
-                    if (!Array.isArray(data.results)) {
-                        reject(new Error(this._getText("rfqInvalidResponse", [path])));
-                        return;
-                    }
-                    resolve(data.results);
-                },
-                error: reject
-            });
-        });
-    }
-
     public onBeforeRebindRfqTable(e: SmartTable$BeforeRebindTableEvent): void {
         const params = e.getParameter("bindingParams") as unknown as { filters: Filter[]; preventTableBind?: boolean };
         if (!this._rfqNumber) {
@@ -129,92 +104,96 @@ export default class rfqdetail extends Controller {
         const rfqModel = this.getOwnerComponent()!.getModel("rfq") as ODataModel;
         const onboardingModel = this.getOwnerComponent()!.getModel() as ODataModel;
         button?.setEnabled(false);
-        view.setBusy(true);
+        const progressText = new MText({ text: this._getText("rfqEmailProcessingRfq", ["1", "1", this._rfqNumber]) });
+        const progressIndicator = new ProgressIndicator({ percentValue: 0, displayValue: "" });
+        const dialog = new Dialog({
+            title: this._getText("rfqEmailProcessingTitle"),
+            contentWidth: "30rem",
+            content: [progressText, progressIndicator],
+            verticalScrolling: false,
+            horizontalScrolling: false
+        });
+        dialog.open();
 
         try {
-            const bidderRows = await this._readCollection<RfqBidder>(rfqModel, "/RFQ_Bidder", [
-                new Filter("RequestForQuotation", FilterOperator.EQ, this._rfqNumber)
-            ]);
-            const bidders = new Set<string>();
-            bidderRows.forEach((bidder) => {
-                const supplierId = bidder.Supplier?.trim();
-                if (supplierId) {
-                    bidders.add(supplierId);
-                }
-            });
-
-            if (!bidders.size) {
-                MessageToast.show(this._getText("rfqEmailNoBidders"));
-                return;
-            }
-
-            const results = await globalThis.Promise.all(Array.from(bidders, async (supplierId) => {
-                try {
-                    const sapCreations = await this._readCollection<SapCreation>(onboardingModel, "/YY1_SAPCREATION_SUPPLIER_ONBOA", [
-                        new Filter("SupplierNumber", FilterOperator.EQ, supplierId)
-                    ]);
-                    const sapCreation = sapCreations.find((record) => record.SupplierNumber?.trim() === supplierId);
-                    if (!sapCreation?.SAP_PARENT_UUID || !sapCreation.SupplierID) {
-                        throw new Error(this._getText("rfqEmailSapRecordMissing"));
-                    }
-
-                    const onboardings = await this._readCollection<SupplierOnboarding>(onboardingModel, "/YY1_SUPPLIER_ONBOARDING", [
-                        new Filter("SAP_UUID", FilterOperator.EQ, sapCreation.SAP_PARENT_UUID),
-                        new Filter("ID", FilterOperator.EQ, sapCreation.SupplierID)
-                    ]);
-                    const onboarding = onboardings.find((record) =>
-                        record.SAP_UUID === sapCreation.SAP_PARENT_UUID && record.ID === sapCreation.SupplierID
-                    );
-                    if (!onboarding?.SupplierEmail?.trim() || !onboarding.AccessToken?.trim()) {
-                        throw new Error(this._getText("rfqEmailOnboardingDataMissing"));
-                    }
-
-                    const quotationDeadline = (view.getModel("rfqDetail") as JSONModel)
-                        .getProperty("/header/QuotationDeadline") as Date | string | undefined;
-                    const response = await fetch(this.getOwnerComponent()!.getManifestObject().resolveUri("mail-api/send-rfq-invitation"), {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            toEmail: onboarding.SupplierEmail,
-                            accessToken: onboarding.AccessToken,
-                            rfqNumber: this._rfqNumber,
-                            quotationDeadline: quotationDeadline ? this.formatter.odataDate(quotationDeadline) : ""
-                        })
-                    });
-                    if (!response.ok) {
-                        throw new Error(`Mail service responded with status ${response.status}`);
-                    }
-                    return { supplierId, sent: true };
-                } catch (error: unknown) {
-                    return { supplierId, sent: false, error: this._formatError(error) };
-                }
-            }));
-
-            const sentCount = results.filter((result) => result.sent).length;
-            const failures = results.filter((result) => !result.sent)
-                .map((result) => `${result.supplierId}: ${result.error}`);
-            if (!failures.length) {
-                MessageToast.show(this._getText("rfqEmailsSent", [String(sentCount)]));
-            } else if (sentCount) {
-                MessageBox.warning(this._getText("rfqEmailsPartial", [String(sentCount), failures.join("\n")]));
-            } else {
-                MessageBox.error(this._getText("rfqEmailsFailed", [failures.join("\n")]));
-            }
+            const quotationDeadline = (view.getModel("rfqDetail") as JSONModel)
+                .getProperty("/header/QuotationDeadline") as Date | string | undefined;
+            const result = await sendRfqEmails(
+                rfqModel,
+                onboardingModel,
+                this._rfqNumber,
+                quotationDeadline ? this.formatter.odataDate(quotationDeadline) : "",
+                (progress) => this._updateProgress(progressText, progressIndicator, progress)
+            );
+            this._showEmailResults([result]);
         } catch (error: unknown) {
-            MessageBox.error(`${this._getText("rfqEmailLookupFailure")}\n${this._formatError(error)}`);
+            this._showEmailResults([{
+                rfqNumber: this._rfqNumber,
+                recipients: [],
+                error: getRfqEmailErrorMessage(error)
+            }]);
         } finally {
-            view.setBusy(false);
+            dialog.close();
+            dialog.destroy();
             button?.setEnabled(true);
         }
     }
 
-    private _formatError(error: unknown): string {
-        if (error instanceof Error) {
-            return error.message;
+    private _updateProgress(text: MText, indicator: ProgressIndicator, progress: RfqEmailProgress): void {
+        text.setText(this._getText("rfqEmailProcessingSupplier", [
+            "1",
+            "1",
+            progress.rfqNumber,
+            String(progress.supplierIndex),
+            String(progress.supplierCount),
+            progress.supplierId
+        ]));
+        indicator.setPercentValue(Math.round((progress.supplierIndex / progress.supplierCount) * 100));
+        indicator.setDisplayValue(`${progress.supplierIndex} / ${progress.supplierCount}`);
+    }
+
+    private _showEmailResults(results: RfqEmailBatchResult[]): void {
+        const lines: string[] = [];
+        let sentCount = 0;
+        let failedCount = 0;
+        results.forEach((result) => {
+            if (result.error) {
+                failedCount++;
+                lines.push(this._getText("rfqEmailRfqFailed", [result.rfqNumber, result.error]));
+            } else if (!result.recipients.length) {
+                lines.push(this._getText("rfqEmailRfqNoBidders", [result.rfqNumber]));
+            } else {
+                result.recipients.forEach((recipient) => {
+                    if (recipient.sent) {
+                        sentCount++;
+                        lines.push(this._getText("rfqEmailRecipientSent", [
+                            recipient.rfqNumber,
+                            recipient.supplierId,
+                            recipient.email ?? ""
+                        ]));
+                    } else {
+                        failedCount++;
+                        lines.push(this._getText("rfqEmailRecipientFailed", [
+                            recipient.rfqNumber,
+                            recipient.supplierId,
+                            recipient.email || this._getText("rfqEmailAddressUnavailable"),
+                            recipient.error ?? this._getText("rfqEmailUnknownError")
+                        ]));
+                    }
+                });
+            }
+        });
+
+        const hasWarnings = results.some((result) => !result.error && !result.recipients.length);
+        const message = `${this._getText("rfqEmailBatchSummary", [
+            String(results.length),
+            String(sentCount),
+            String(failedCount)
+        ])}\n\n${lines.join("\n")}`;
+        if (failedCount || hasWarnings) {
+            MessageBox.warning(message, { title: this._getText("rfqEmailResultsTitle") });
+        } else {
+            MessageBox.success(message, { title: this._getText("rfqEmailResultsTitle") });
         }
-        if (typeof error === "object" && error !== null && "message" in error && typeof error.message === "string") {
-            return error.message;
-        }
-        return this._getText("rfqEmailUnknownError");
     }
 }

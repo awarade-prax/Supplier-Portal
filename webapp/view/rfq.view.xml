@@ -57,7 +57,25 @@
                     enableExport="true"
                     requestAtLeastFields="RequestForQuotation,RFQType,RFQDescription,Language,PurchasingOrganization,PurchasingGroup,CompanyCode,DocumentCurrency,PublishingDate,QuotationDeadline,FollowOnDocumentType,CreatedBy,CreationDate,TargetValue"
                 >
-                    <table:Table id="rfqTable" selectionMode="None" rowActionCount="1">
+                    <st:customToolbar>
+                        <OverflowToolbar id="rfqSmartTableToolbar">
+                            <ToolbarSpacer id="rfqToolbarSpacer" />
+                            <Button
+                                id="rfqSendEmailsButton"
+                                text="{i18n>sendEmails}"
+                                type="Emphasized"
+                                enabled="false"
+                                press=".onSendEmails"
+                            />
+                        </OverflowToolbar>
+                    </st:customToolbar>
+                    <table:Table
+                        id="rfqTable"
+                        selectionMode="MultiToggle"
+                        selectionBehavior="RowSelector"
+                        rowSelectionChange=".onSelectionChange"
+                        rowActionCount="1"
+                    >
                         <table:rowMode>
                             <rowmodes:Auto id="rfqRowMode" />
                         </table:rowMode>

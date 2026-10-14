@@ -426,10 +426,10 @@ app.post(
                     </a>
                 </p>
                 <p>For any clarification, please contact "Purchase Department" at
-                    <a href="mailto:purchase@serumindia.com">purchase@serumindia.com</a>.
+                    <a href="mailto:purchase@praxisinfosolutions.com">purchase@praxisinfosolutions.com</a>.
                 </p>
                 <p>We look forward to receiving your quotation.</p>
-                <p>Best regards,<br>Serum Institute of India</p>
+                <p>Best regards,<br>Praxis Info Solutions Pvt. Ltd.</p>
             </div>
         `;
 

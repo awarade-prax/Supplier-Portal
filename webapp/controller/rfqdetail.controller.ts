@@ -114,6 +114,7 @@ export default class rfqdetail extends Controller {
                 onboardingModel,
                 this._rfqNumber,
                 quotationDeadline ? this.formatter.odataDate(quotationDeadline) : "",
+                this.getOwnerComponent()!.getManifestObject().resolveUri("mail-api/send-rfq-invitation"),
                 (progress) => emailDialog.updateProgress(progress, 0, 1),
                 (recipient) => emailDialog.setRecipientResult(recipient)
             );

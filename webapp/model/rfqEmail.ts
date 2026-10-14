@@ -72,6 +72,7 @@ export async function sendRfqEmails(
     onboardingModel: ODataModel,
     rfqNumber: string,
     quotationDeadline: string,
+    mailEndpoint: string,
     onProgress?: (progress: RfqEmailProgress) => void,
     onRecipientResult?: (result: RfqEmailRecipientResult) => void
 ): Promise<RfqEmailBatchResult> {
@@ -119,7 +120,7 @@ export async function sendRfqEmails(
                 throw new Error("The supplier email or access token is missing from the onboarding record.");
             }
 
-            const response = await fetch("/mail-api/send-rfq-invitation", {
+            const response = await fetch(mailEndpoint, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

@@ -88,6 +88,7 @@ export default class rfq extends Controller {
                         onboardingModel,
                         row.rfqNumber,
                         quotationDeadline,
+                        this.getOwnerComponent()!.getManifestObject().resolveUri("mail-api/send-rfq-invitation"),
                         (progress) => emailDialog.updateProgress(progress, index, rfqRows.length),
                         (recipientResult) => emailDialog.setRecipientResult(recipientResult)
                     );

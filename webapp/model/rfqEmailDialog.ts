@@ -5,7 +5,9 @@ import Dialog from "sap/m/Dialog";
 import MText from "sap/m/Text";
 import ObjectStatus from "sap/m/ObjectStatus";
 import ProgressIndicator from "sap/m/ProgressIndicator";
+import ScrollContainer from "sap/m/ScrollContainer";
 import Table from "sap/m/Table";
+import VBox from "sap/m/VBox";
 import JSONModel from "sap/ui/model/json/JSONModel";
 import { ValueState } from "sap/ui/core/library";
 import { RfqEmailProgress, RfqEmailRecipientResult } from "./rfqEmail";
@@ -35,8 +37,6 @@ export function createRfqEmailDialog(
     const table = new Table({
         width: "100%",
         fixedLayout: true,
-        growing: true,
-        growingThreshold: 8,
         columns: [
             new Column({ width: "10rem", header: new MText({ text: getText("rfqEmailColumnRfq") }) }),
             new Column({ width: "10rem", header: new MText({ text: getText("rfqEmailColumnBidder") }) }),
@@ -56,6 +56,23 @@ export function createRfqEmailDialog(
             ]
         })
     });
+    const tableScrollContainer = new ScrollContainer({
+        width: "100%",
+        height: "22rem",
+        vertical: true,
+        horizontal: false,
+        content: [table]
+    });
+    const dialogContent = new VBox({
+        width: "100%",
+        items: [
+            new VBox({
+                width: "100%",
+                items: [progressText, progressIndicator]
+            }).addStyleClass("sapUiSmallMarginBottom"),
+            tableScrollContainer
+        ]
+    }).addStyleClass("sapUiContentPadding");
 
     let dialog: Dialog;
     const closeButton = new Button({
@@ -68,9 +85,9 @@ export function createRfqEmailDialog(
         contentWidth: "60rem",
         contentHeight: "32rem",
         stretchOnPhone: true,
-        verticalScrolling: true,
+        verticalScrolling: false,
         horizontalScrolling: false,
-        content: [progressText, progressIndicator, table],
+        content: [dialogContent],
         endButton: closeButton
     });
     dialog.attachAfterClose(() => dialog.destroy());
